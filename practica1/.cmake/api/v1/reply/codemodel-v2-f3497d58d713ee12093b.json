@@ -1,0 +1,105 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1
+					],
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-b193f63b2c5e5209d672.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "2.8"
+					},
+					"projectIndex" : 0,
+					"source" : "."
+				},
+				{
+					"build" : "src",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-src-d6271a7d1fe671397a00.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.16"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "src",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3
+					]
+				}
+			],
+			"name" : "",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0,
+						1
+					],
+					"name" : "chocachoca",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 1,
+					"id" : "ICES__home_usuario_robocomp_ws_src_robocomp_components_grupo3_practica1_src::@145eef247bfb46b6828c",
+					"jsonFile" : "target-ICES__home_usuario_robocomp_ws_src_robocomp_components_grupo3_practica1_src-432364c15869e9a18d7a.json",
+					"name" : "ICES__home_usuario_robocomp_ws_src_robocomp_components_grupo3_practica1_src",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "chocachoca::@145eef247bfb46b6828c",
+					"jsonFile" : "target-chocachoca-c45f90c7757df4546a1b.json",
+					"name" : "chocachoca",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "chocachoca_autogen::@145eef247bfb46b6828c",
+					"jsonFile" : "target-chocachoca_autogen-b25dacfe7226cfe8a92b.json",
+					"name" : "chocachoca_autogen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "chocachoca_autogen_timestamp_deps::@145eef247bfb46b6828c",
+					"jsonFile" : "target-chocachoca_autogen_timestamp_deps-16dd0fa134e34fddc213.json",
+					"name" : "chocachoca_autogen_timestamp_deps",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/usuario/robocomp_ws/src/robocomp/components/grupo3/practica1",
+		"source" : "/home/usuario/robocomp_ws/src/robocomp/components/grupo3/practica1"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 7
+	}
+}
