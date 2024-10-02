@@ -1,5 +1,5 @@
 src/CMakeFiles/chocachoca.dir/main.cpp.o: \
- /home/usuario/robocomp_ws/src/robocomp/components/grupo3/practica1/src/main.cpp \
+ /home/usuario/robocomp/components/grupo3/practica1/src/main.cpp \
  /usr/include/stdc-predef.h /usr/include/signal.h /usr/include/features.h \
  /usr/include/features-time64.h \
  /usr/include/x86_64-linux-gnu/bits/wordsize.h \
@@ -1150,15 +1150,15 @@ src/CMakeFiles/chocachoca.dir/main.cpp.o: \
  /home/robocomp/robocomp/classes/sigwatch/sigwatch.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QObject \
  /home/robocomp/robocomp/classes/qlog/qlog.h \
- /home/usuario/robocomp_ws/src/robocomp/components/grupo3/practica1/src/config.h \
- /home/usuario/robocomp_ws/src/robocomp/components/grupo3/practica1/src/config.h \
- /home/usuario/robocomp_ws/src/robocomp/components/grupo3/practica1/src/genericmonitor.h \
- /home/usuario/robocomp_ws/src/robocomp/components/grupo3/practica1/src/genericworker.h \
+ /home/usuario/robocomp/components/grupo3/practica1/src/config.h \
+ /home/usuario/robocomp/components/grupo3/practica1/src/config.h \
+ /home/usuario/robocomp/components/grupo3/practica1/src/genericmonitor.h \
+ /home/usuario/robocomp/components/grupo3/practica1/src/genericworker.h \
  /usr/include/x86_64-linux-gnu/qt6/QtGui/QtGui \
- /home/usuario/robocomp_ws/src/robocomp/components/grupo3/practica1/src/ui_mainUI.h \
+ /home/usuario/robocomp/components/grupo3/practica1/src/ui_mainUI.h \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QApplication \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QWidget \
- /home/usuario/robocomp_ws/src/robocomp/components/grupo3/practica1/src/CommonBehavior.h \
+ /home/usuario/robocomp/components/grupo3/practica1/src/CommonBehavior.h \
  /home/robocomp/robocomp/classes/grafcetStep/GRAFCETStep.h \
  /usr/include/x86_64-linux-gnu/qt6/QtStateMachine/QState \
  /usr/include/x86_64-linux-gnu/qt6/QtStateMachine/qstate.h \
@@ -1171,10 +1171,10 @@ src/CMakeFiles/chocachoca.dir/main.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt6/QtStateMachine/qstate.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QEvent \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QString \
- /home/usuario/robocomp_ws/src/robocomp/components/grupo3/practica1/src/GenericBase.h \
- /home/usuario/robocomp_ws/src/robocomp/components/grupo3/practica1/src/Laser.h \
- /home/usuario/robocomp_ws/src/robocomp/components/grupo3/practica1/src/OmniRobot.h \
- /home/usuario/robocomp_ws/src/robocomp/components/grupo3/practica1/src/specificworker.h \
- /home/usuario/robocomp_ws/src/robocomp/components/grupo3/practica1/src/genericworker.h \
- /home/usuario/robocomp_ws/src/robocomp/components/grupo3/practica1/src/specificmonitor.h \
- /home/usuario/robocomp_ws/src/robocomp/components/grupo3/practica1/src/commonbehaviorI.h
+ /home/usuario/robocomp/components/grupo3/practica1/src/GenericBase.h \
+ /home/usuario/robocomp/components/grupo3/practica1/src/Laser.h \
+ /home/usuario/robocomp/components/grupo3/practica1/src/OmniRobot.h \
+ /home/usuario/robocomp/components/grupo3/practica1/src/specificworker.h \
+ /home/usuario/robocomp/components/grupo3/practica1/src/genericworker.h \
+ /home/usuario/robocomp/components/grupo3/practica1/src/specificmonitor.h \
+ /home/usuario/robocomp/components/grupo3/practica1/src/commonbehaviorI.h

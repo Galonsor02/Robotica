@@ -366,5 +366,5 @@ src/CMakeFiles/chocachoca.dir/home/robocomp/robocomp/classes/sigwatch/sigwatch.c
  /usr/include/x86_64-linux-gnu/bits/types/struct_sigstack.h \
  /usr/include/x86_64-linux-gnu/bits/sigthread.h \
  /usr/include/x86_64-linux-gnu/bits/signal_ext.h \
- /home/usuario/robocomp_ws/src/robocomp/components/grupo3/practica1/src/chocachoca_autogen/include/moc_sigwatch.cpp \
- /home/usuario/robocomp_ws/src/robocomp/components/grupo3/practica1/src/chocachoca_autogen/include/../../../../../../../../../../robocomp/robocomp/classes/sigwatch/sigwatch.h
+ /home/usuario/robocomp/components/grupo3/practica1/src/chocachoca_autogen/include/moc_sigwatch.cpp \
+ /home/usuario/robocomp/components/grupo3/practica1/src/../../../../../../../../robocomp/robocomp/classes/sigwatch/sigwatch.h

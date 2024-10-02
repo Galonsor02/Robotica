@@ -47,9 +47,14 @@ public slots:
 	void emergency();
 	void restore();
 	int startup_check();
+
 private:
 	bool startup_check_flag;
-
+	enum class State { Avanzar, Rotar, Spiral};
+	State state = State::Avanzar;
+	void avanzar(const RoboCompLaser::TLaserData& ldata);
+	void rotar(const RoboCompLaser::TLaserData& ldata);
+	void spiral(const RoboCompLaser::TLaserData& ldata);
 };
 
 #endif

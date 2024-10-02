@@ -81,9 +81,57 @@ void SpecificWorker::compute()
 	try { ldata = laser_proxy->getLaserData(); }
 	catch(const Ice::Exception &e) {std::cout << "Exception : " << e.what() << std::endl;}
 
-	for (auto &d : ldata)
-		qDebug() << d.dist << d.angle;
-	qDebug() << "------------------------------";
+	// for (auto &d : ldata)
+	// 	qDebug() << d.dist << d.angle;
+	// qDebug() << "------------------------------";
+
+
+	switch(state) {
+		case State::Avanzar:
+			avanzar(ldata);
+			break;
+		case State::Rotar:
+			rotar(ldata);
+			break;
+		case State::Spiral:
+			break;
+	}
+
+	//float adv = 0.f; float side = 500; float rot = 2.f;
+	//try { omnirobot_proxy->setSpeedBase(side, adv, rot);}
+	//catch(const Ice::Exception &e) {std::cout << "Exception : " << e.what() << std::endl;}
+}
+void SpecificWorker::avanzar(const RoboCompLaser::TLaserData& ldata)
+{
+	//Check exit conditions
+	int offset = (ldata.size() *3) /8;
+	auto minElement = std::min_element(ldata.begin() + offset, ldata.end() - offset, [](auto &a, auto &b) {
+		return a.dist < b.dist;
+	});
+	if(  minElement->dist < 400)
+	{
+		state = State::Rotar;
+		return;
+	}
+
+	//do my thing
+	float adv = 0.f; float side = 500; float rot = 0.5;
+	try { omnirobot_proxy->setSpeedBase(side, adv, rot);}
+	catch(const Ice::Exception &e) {std::cout << "Exception : " << e.what() << std::endl;}
+}
+
+void SpecificWorker::rotar(const RoboCompLaser::TLaserData& ldata)
+{
+	//check for exit
+	auto minElement = std::min_element(ldata.begin() + ldata.size(), ldata.end());
+	if(  minElement->dist > 400) {
+		state = State::Avanzar;
+	}else {
+		//do my thing
+		float adv = 0.f; float side = 0; float rot = 1.f;
+		try { omnirobot_proxy->setSpeedBase(side, adv, rot);}
+		catch(const Ice::Exception &e) {std::cout << "Exception : " << e.what() << std::endl;}
+	}
 }
 
 void SpecificWorker::emergency()

@@ -1,5 +1,5 @@
-/home/usuario/robocomp_ws/src/robocomp/components/grupo3/practica1/src/chocachoca_autogen/EWIEGA46WW/moc_specificmonitor.cpp: /home/usuario/robocomp_ws/src/robocomp/components/grupo3/practica1/src/specificmonitor.h \
-  /home/usuario/robocomp_ws/src/robocomp/components/grupo3/practica1/src/chocachoca_autogen/moc_predefs.h \
+/home/usuario/robocomp/components/grupo3/practica1/src/chocachoca_autogen/EWIEGA46WW/moc_specificmonitor.cpp: /home/usuario/robocomp/components/grupo3/practica1/src/specificmonitor.h \
+  /home/usuario/robocomp/components/grupo3/practica1/src/chocachoca_autogen/moc_predefs.h \
   /home/usuario/robocomp_ws/src/robocomp/components/grupo3/practica1/src/CommonBehavior.h \
   /home/usuario/robocomp_ws/src/robocomp/components/grupo3/practica1/src/GenericBase.h \
   /home/usuario/robocomp_ws/src/robocomp/components/grupo3/practica1/src/Laser.h \
