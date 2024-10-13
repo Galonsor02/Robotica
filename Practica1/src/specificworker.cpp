@@ -124,13 +124,22 @@ void SpecificWorker::compute()
 SpecificWorker::RetVal SpecificWorker::forward(auto &points)
 {
     // check if the central part of the filtered_points vector has a minimum lower than the size of the robot
-    int offset = params.LIDAR_OFFSET * (points.size() / 2);
-    auto min_point = std::min_element(std::begin(points) + offset, std::end(points) - offset, [](auto &a, auto &b)
-        {  return a.distance2d < b.distance2d; });
-    if (min_point != points.end() and min_point->distance2d < params.STOP_THRESHOLD)
+    auto offset_begin = closest_lidar_index_to_given_angle(points, -params.LIDAR_FRONT_SECTION);
+    auto offset_end = closest_lidar_index_to_given_angle(points, params.LIDAR_FRONT_SECTION);
+    if(offset_begin and offset_end)
+    {
+        auto min_point = std::min_element(std::begin(points) + offset_begin.value(), std::begin(points) + offset_end.value(), [](auto &a, auto &b)
+        { return a.distance2d < b.distance2d; });
+        if (min_point != points.end() and min_point->distance2d < params.STOP_THRESHOLD)
             return RetVal(STATE::TURN, 0.f, 0.f);  // stop and change state if obstacle detected
-    else
-        return RetVal(STATE::FORWARD, params.MAX_ADV_SPEED, 0.f);
+        else
+            return RetVal(STATE::FORWARD, params.MAX_ADV_SPEED, 0.f);
+    }
+    else // no valid readings
+    {
+        qWarning() << "No valid readings. Stopping";
+        return RetVal(STATE::FORWARD, 0.f, 0.f);
+    }
 }
 
 /**
@@ -149,28 +158,35 @@ SpecificWorker::RetVal SpecificWorker::turn(auto &points)
     static std::mt19937 gen(rd());
     static std::uniform_int_distribution<int> dist(0, 1);
     static bool first_time = true;
+    static int sign = 1;
+
     // check if the central part of the filtered_points vector is free to go. If so stop turning and change state to FORWARD
-    int offset = params.LIDAR_OFFSET * (points.size() / 2);
-    auto min_point = std::min_element(std::begin(points) + offset, std::end(points) - offset, [](auto &a, auto &b)
+    auto offset_begin = closest_lidar_index_to_given_angle(points, -params.LIDAR_FRONT_SECTION);
+    auto offset_end = closest_lidar_index_to_given_angle(points, params.LIDAR_FRONT_SECTION);
+    if(offset_begin and offset_end)
+    {
+        auto min_point = std::min_element(std::begin(points) + offset_begin.value(), std::begin(points) + offset_end.value(), [](auto &a, auto &b)
         { return a.distance2d < b.distance2d; });
-
-
-    if(min_point != std::end(points) and min_point->distance2d > params.ADVANCE_THRESHOLD)
-    {
-        first_time = true;
-        return RetVal(STATE::FOLLOWWALL, 0.f, 0.f);
-    }
-    else    // Keep doing my business
-    {
-        // Generate a random sign (-1 or 1) if first_time = true;
-        int sign = 1;
-        if(first_time)
+        if (min_point != std::end(points) and min_point->distance2d > params.ADVANCE_THRESHOLD)
         {
-            sign = dist(gen);
-            if (sign == 0) sign = -1; else sign = 1;
-            first_time = false;
+            first_time = true;
+            return RetVal(STATE::FORWARD, 0.f, 0.f);
+        } else    // Keep doing my business
+        {
+            // Generate a random sign (-1 or 1) if first_time = true;
+            if (first_time)
+            {
+                sign = dist(gen);
+                if (sign == 0) sign = -1; else sign = 1;
+                first_time = false;
+            }
+            return RetVal(STATE::TURN, 0.f, sign * params.MAX_ROT_SPEED);
         }
-        return RetVal(STATE::TURN, 0.f, sign * params.MAX_ROT_SPEED);
+    }
+    else // no valid readings
+    {
+        qWarning() << "No valid readings. Stopping";
+        return RetVal(STATE::FORWARD, 0.f, 0.f);
     }
 }
 
