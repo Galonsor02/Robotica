@@ -169,8 +169,8 @@ SpecificWorker::RetVal SpecificWorker::turn(auto &points)
         { return a.distance2d < b.distance2d; });
         if (min_point != std::end(points) and min_point->distance2d > params.ADVANCE_THRESHOLD)
         {
-            first_time = true;
-            return RetVal(STATE::FOLLOWWALL, 0.f, 0.f);
+            //first_time = true;
+            return RetVal(STATE::FOLLOWWALL, params.MAX_ADV_SPEED, 0.f);
         } else    // Keep doing my business
         {
             // Generate a random sign (-1 or 1) if first_time = true;
@@ -201,13 +201,14 @@ SpecificWorker::RetVal SpecificWorker::followWall(auto &points) {
         ;
         if (min_point != points.end() and min_point->distance2d < params.STOP_THRESHOLD) {
             if(min_point->phi < 0) {
-                return RetVal(STATE::TURN, 0.f, 1);// stop and change state if obstacle detected
-            }else
-                return RetVal(STATE::TURN, 0.f, -1);
+                return RetVal(STATE::TURN, 0.f, params.MAX_ROT_SPEED);// stop and change state if obstacle detected
+            }else {
+                return RetVal(STATE::TURN, 0.f, -params.MAX_ROT_SPEED);
+            }
         }else if(min_point->phi < 0 and (min_point->distance2d > (params.STOP_THRESHOLD*2))) {
-            return RetVal(STATE::TURN, 0.f, -1);
-        }else if (min_point->phi > 0 and min_point->distance2d > params.STOP_THRESHOLD*2) {
-            return RetVal(STATE::TURN, 0.f, 1);
+            return RetVal(STATE::TURN, 0.f, -params.MAX_ROT_SPEED);
+        }else if(min_point->phi > 0 and (min_point->distance2d > (params.STOP_THRESHOLD*2))) {
+            return RetVal(STATE::TURN, 0.f, params.MAX_ROT_SPEED);
         }
     }
     return RetVal(STATE::FOLLOWWALL, params.MAX_ADV_SPEED, 0.f);
