@@ -64,21 +64,26 @@ class SpecificWorker : public GenericWorker
             std::string LIDAR_NAME_LOW = "bpearl";
             std::string LIDAR_NAME_HIGH = "helios";
             QRectF GRID_MAX_DIM{-5000, 2500, 10000, -5000};
-
+            float aumento=2;
+            float aumentoMin=1;
+            int giros=0;
         };
         Params params;
 
         bool startup_check_flag;
         AbstractGraphicViewer *viewer;
 
+
         // state machine
-        enum class STATE {FORWARD, TURN, FOLLOWWALL};
+        enum class STATE {FORWARD, TURN, FOLLOWWALL, SPIRALREVERSE, SPIRAL};
         STATE state = STATE::FORWARD;
 
         using RetVal = std::tuple<STATE, float, float>;
         RetVal forward(auto &filtered_points);
         RetVal turn(auto &filtered_points);
         RetVal followWall(auto &filtered_points);
+        RetVal spiral(auto &filtered_points);
+        RetVal spiralReverse(auto &filtered_points);
         void draw_lidar(auto &filtered_points, QGraphicsScene *scene);
         QGraphicsPolygonItem* robot_draw;
         std::expected<int, string> closest_lidar_index_to_given_angle(const auto &points, float angle);

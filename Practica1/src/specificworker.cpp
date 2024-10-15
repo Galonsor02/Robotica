@@ -80,7 +80,6 @@ void SpecificWorker::compute()
 
     /// Add State machine with your sweeping logic
     RetVal ret_val;
-
     switch(state)
     {
         case STATE::FORWARD:
@@ -97,6 +96,14 @@ void SpecificWorker::compute()
         {
             ret_val = followWall(p_filter);
             break;
+        }
+        case STATE::SPIRAL:
+        {
+            ret_val = spiral(p_filter);
+        }
+        case STATE::SPIRALREVERSE:
+        {
+            ret_val = spiralReverse(p_filter);
         }
     }
     /// unpack  the tuple
@@ -167,10 +174,10 @@ SpecificWorker::RetVal SpecificWorker::turn(auto &points)
     {
         auto min_point = std::min_element(std::begin(points) + offset_begin.value(), std::begin(points) + offset_end.value(), [](auto &a, auto &b)
         { return a.distance2d < b.distance2d; });
-        if (min_point != std::end(points) and min_point->distance2d > params.ADVANCE_THRESHOLD)
+        if (min_point != std::end(points) and min_point->distance2d > (params.ADVANCE_THRESHOLD * (params.aumento-1)))
         {
             //Sfirst_time = true;
-            return RetVal(STATE::FOLLOWWALL, params.MAX_ADV_SPEED, 0.f);
+            return RetVal(STATE::SPIRALREVERSE, params.MAX_ADV_SPEED, 0.f);
         } else    // Keep doing my business
         {
             // Generate a random sign (-1 or 1) if first_time = true;
@@ -186,7 +193,7 @@ SpecificWorker::RetVal SpecificWorker::turn(auto &points)
     else // no valid readings
     {
         qWarning() << "No valid readings. Stopping";
-        return RetVal(STATE::FOLLOWWALL, 0.f, 0.f);
+        return RetVal(STATE::SPIRALREVERSE, 0.f, 0.f);
     }
 }
 
@@ -198,20 +205,48 @@ SpecificWorker::RetVal SpecificWorker::followWall(auto &points) {
     if(offset_begin and offset_end) {
         auto min_point = std::min_element(std::begin(points) + offset_begin.value(), std::begin(points) + offset_end.value(), [](auto &a, auto &b)
         { return a.distance2d < b.distance2d; });
-        ;
         if (min_point != points.end() and min_point->distance2d < params.STOP_THRESHOLD) {
             return RetVal(STATE::TURN, 0.f, params.MAX_ROT_SPEED);// stop and change state if obstacle detected
-        }else if(min_point->phi < 0 and (min_point->distance2d > (params.STOP_THRESHOLD*2))) {
+        }else if(min_point->phi < 0 and (min_point->distance2d > (params.STOP_THRESHOLD*1.5))) {
             return RetVal(STATE::TURN, 0.f, -params.MAX_ROT_SPEED);
-        }else if(min_point->phi > 0 and (min_point->distance2d > (params.STOP_THRESHOLD*2))) {
+        }else if(min_point->phi > 0 and (min_point->distance2d > (params.STOP_THRESHOLD*1.5))) {
             return RetVal(STATE::TURN, 0.f, params.MAX_ROT_SPEED);
         }
     }
     return RetVal(STATE::FOLLOWWALL, params.MAX_ADV_SPEED, 0.f);
 }
 
+//FUNCION espiral
+SpecificWorker::RetVal SpecificWorker::spiral(auto &points) {
 
 
+    return RetVal(STATE::SPIRAL, params.MAX_ADV_SPEED, 0.f);
+}
+
+
+SpecificWorker::RetVal SpecificWorker::spiralReverse(auto &points) {
+
+    qDebug() << params.aumento<< params.giros;
+    auto offset_begin = closest_lidar_index_to_given_angle(points, -params.LIDAR_FRONT_SECTION);
+    auto offset_end = closest_lidar_index_to_given_angle(points, params.LIDAR_FRONT_SECTION);
+    if(offset_begin and offset_end) {
+        auto min_point = std::min_element(std::begin(points) + offset_begin.value(), std::begin(points) + offset_end.value(), [](auto &a, auto &b)
+        { return a.distance2d < b.distance2d; });
+        if (min_point != points.end() and min_point->distance2d < (params.STOP_THRESHOLD *(params.aumento-1))) {
+            params.giros++;
+            if(params.giros >= 6) {
+                params.aumento++;
+                params.giros=0;
+            }
+            return RetVal(STATE::TURN, 0.f, params.MAX_ROT_SPEED);// stop and change state if obstacle detected
+        }else if(min_point->phi < 0 and (min_point->distance2d > (params.STOP_THRESHOLD * params.aumento))) {
+            return RetVal(STATE::TURN, 0.f, -params.MAX_ROT_SPEED);
+        }else if(min_point->phi > 0 and (min_point->distance2d > (params.STOP_THRESHOLD * params.aumento))) {
+            return RetVal(STATE::TURN, 0.f, params.MAX_ROT_SPEED);
+        }
+    }
+    return RetVal(STATE::SPIRALREVERSE, params.MAX_ADV_SPEED, 0.f);
+}
 /**
  * Draws LIDAR points onto a QGraphicsScene.
  *
