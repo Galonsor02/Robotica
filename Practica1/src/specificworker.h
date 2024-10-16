@@ -57,16 +57,22 @@ class SpecificWorker : public GenericWorker
             float ROBOT_LENGTH = 480;  // mm
             float MAX_ADV_SPEED = 1000; // mm/s
             float MAX_ROT_SPEED = 1; // rad/s
-            float STOP_THRESHOLD = MAX_ADV_SPEED*0.7; // mm
+            float STOP_THRESHOLD = MAX_ADV_SPEED*0.5; // mm
             float ADVANCE_THRESHOLD = ROBOT_WIDTH * 2; // mm
             float LIDAR_OFFSET = 9.f/10.f; // eight tenths of vector's half size
-            float LIDAR_FRONT_SECTION = 0.5; // rads, aprox 30 degrees
+            float LIDAR_FRONT_SECTION = 0.3; // rads, aprox 30 degrees
+            float WALL_MIN_DISTANCE = ROBOT_WIDTH; //mm
+            float WALL_DELTA = ROBOT_WIDTH/2;
             std::string LIDAR_NAME_LOW = "bpearl";
             std::string LIDAR_NAME_HIGH = "helios";
             QRectF GRID_MAX_DIM{-5000, 2500, 10000, -5000};
-            float aumento=2;
-            float aumentoMin=1;
+            //spiral
+            float AngularSpeed=1.1;
+            float forwardSpeed=0.1;
+            //spiralreverse
+            float aumento=ROBOT_WIDTH;
             int giros=0;
+            int girosMax=6;
         };
         Params params;
 
@@ -76,7 +82,7 @@ class SpecificWorker : public GenericWorker
 
         // state machine
         enum class STATE {FORWARD, TURN, FOLLOWWALL, SPIRALREVERSE, SPIRAL};
-        STATE state = STATE::FORWARD;
+        STATE state = STATE::FOLLOWWALL;
 
         using RetVal = std::tuple<STATE, float, float>;
         RetVal forward(auto &filtered_points);
