@@ -183,7 +183,8 @@ SpecificWorker::RetVal SpecificWorker::turn(auto &points)
     if (min_point != std::end(points) and min_point->distance2d > (
             params.ADVANCE_THRESHOLD + (params.aumento - params.ROBOT_WIDTH)))
     {
-        //Sfirst_time = true;
+        first_time = true;
+        qDebug() << "sigo pared";
         return RetVal(STATE::FOLLOWWALL, params.MAX_ADV_SPEED, 0.f);
     }
 
@@ -210,10 +211,11 @@ SpecificWorker::RetVal SpecificWorker::followWall(auto &points)
 {
     auto offset_begin = closest_lidar_index_to_given_angle(points, -params.LIDAR_FRONT_SECTION);
     auto offset_end = closest_lidar_index_to_given_angle(points, params.LIDAR_FRONT_SECTION);
-
+    qDebug() << "wall";
     // not index found
     if (not offset_begin or not offset_end)
     {
+        qDebug() << "primer if";
         return RetVal(STATE::TURN, 0.f, 0.f);
     }
 
@@ -222,67 +224,89 @@ SpecificWorker::RetVal SpecificWorker::followWall(auto &points)
                                       std::begin(points) + offset_end.value(), [](auto &a, auto &b) {
                                           return a.distance2d < b.distance2d;
                                       });
+
+    qDebug() << min_point_red->distance2d;
     if (min_point_red != points.end() and min_point_red->distance2d < params.STOP_THRESHOLD)
     {
+        qDebug() << "Girando";
         return RetVal(STATE::TURN, 0.f, params.MAX_ROT_SPEED); // stop and change state if obstacle detected
     }
+    auto min_point = std::ranges::min_element(points, [](auto &a, auto &b) { return a.distance2d < b.distance2d; });
 
     // WALL
     // compute min_distance in complete range
-    if(auto min_point = std::ranges::min_element(points, [](auto &a, auto &b) { return a.distance2d < b.distance2d; }); min_point != points.end())
+    if( min_point != points.end())
     {
         // breaks
         float error = min_point->distance2d - params.WALL_MIN_DISTANCE;
-        float adv_brake = 1.f / params.ROBOT_WIDTH * fabs(error);
-        float rot_brake = -1.f / 400.f * fabs(error) + 1.f;
+        qDebug() << error;
+
+        //float rot_brake=((1.f / 300.f) * fabs(error)) + 1.f;
+        auto adv_brake = ((1.f / params.ROBOT_WIDTH) * fabs(error));
+        qDebug() << adv_brake;
+        //qDebug() << rot_brake;
+
+        //qDebug() << params.WALL_MIN_DISTANCE - params.WALL_DELTA;
+        qDebug() << min_point->distance2d;
 
         //  too close and left hand
-        if (min_point->phi < 0 and min_point->distance2d < (params.WALL_MIN_DISTANCE - params.WALL_DELTA))
+        if (min_point->phi < 0 and min_point->distance2d < (params.WALL_MIN_DISTANCE- 100))
         {
-            return RetVal(STATE::TURN, params.MAX_ADV_SPEED * adv_brake, -params.MAX_ROT_SPEED * rot_brake); // stop and change state if obstacle detected
+            qDebug() << "Izq izq: " << min_point->distance2d;
+            qDebug() << params.WALL_MIN_DISTANCE - params.WALL_DELTA;
+            return RetVal(STATE::FOLLOWWALL, params.MAX_ADV_SPEED * adv_brake, 0.5f); // stop and change state if obstacle detected
         }
-
         //  too close and right hand
-        if (min_point->phi < 0 and min_point->distance2d < (params.WALL_MIN_DISTANCE - params.WALL_DELTA))
+        if (min_point->phi > 0 and min_point->distance2d < (params.WALL_MIN_DISTANCE- 100))
         {
-            return RetVal(STATE::TURN, params.MAX_ADV_SPEED * adv_brake, params.MAX_ROT_SPEED * rot_brake); // stop and change state if obstacle detected
+            qDebug() << "Der der: " << min_point->distance2d;
+            qDebug() << params.WALL_MIN_DISTANCE - params.WALL_DELTA;
+            return RetVal(STATE::FOLLOWWALL, params.MAX_ADV_SPEED * adv_brake, -0.5f); // stop and change state if obstacle detected
         }
 
         // too far and left hand
-        if (min_point->phi < 0 and (min_point->distance2d > (params.WALL_MIN_DISTANCE )))
+        if (min_point->phi < 0 and (min_point->distance2d > (params.WALL_MIN_DISTANCE +200)))
         {
-            return RetVal(STATE::TURN, params.MAX_ADV_SPEED * adv_brake, -params.MAX_ROT_SPEED * rot_brake); // stop and change state if obstacle detected
+            qDebug() << "Izq muy lejos: " <<  min_point->distance2d;
+            qDebug() << params.WALL_MIN_DISTANCE - params.WALL_DELTA;
+            return RetVal(STATE::FOLLOWWALL, params.MAX_ADV_SPEED * adv_brake, -0.5f); // stop and change state if obstacle detected
         }
 
         // too far and right hand
-        if (min_point->phi > 0 and (min_point->distance2d > (params.WALL_MIN_DISTANCE )))
+        if (min_point->phi > 0 and (min_point->distance2d > (params.WALL_MIN_DISTANCE+200)))
         {
-            return RetVal(STATE::TURN, params.MAX_ADV_SPEED * adv_brake, params.MAX_ROT_SPEED * rot_brake); // stop and change state if obstacle detected
+            qDebug() << "Der muy lejos: " <<  min_point->distance2d;
+            qDebug() << params.WALL_MIN_DISTANCE - params.WALL_DELTA;
+            return RetVal(STATE::FOLLOWWALL, params.MAX_ADV_SPEED * adv_brake, 0.5f); // stop and change state if obstacle detected
         }
     }
+    return RetVal(STATE::FOLLOWWALL, params.MAX_ADV_SPEED, 0.f);
 }
 
 //FUNCION espiral
 SpecificWorker::RetVal SpecificWorker::spiral(auto &points)
 {
-    qDebug() << "spiral";
-    auto offset_begin = closest_lidar_index_to_given_angle(points, -params.LIDAR_FRONT_SECTION);
-    auto offset_end = closest_lidar_index_to_given_angle(points, params.LIDAR_FRONT_SECTION);
 
-    if (offset_begin and offset_end)
+    qDebug() << "spiral";
+    auto min_point =std::ranges::min_element(points, [](auto &a, auto &b) { return a.distance2d < b.distance2d; });
+
+    if (min_point->distance2d > params.WALL_MIN_DISTANCE)
     {
-        auto min_point = std::min_element(std::begin(points) + offset_begin.value(),
-                                          std::begin(points) + offset_end.value(), [](auto &a, auto &b) {
-                                              return a.distance2d < b.distance2d;
-                                          });
-        if (min_point->distance2d < 1)
+        if(params.advSpeed < params.MAX_ADV_SPEED and params.rotSpeed > 0)
         {
-            params.AngularSpeed = 0.1;
-            params.forwardSpeed = 0.3;
-            return RetVal(STATE::SPIRAL, params.MAX_ROT_SPEED, 0.f);
+            qDebug() << "aumenta velocidad avance"<<params.advSpeed;
+            params.advSpeed +=1.2;
+            params.rotSpeed -= 0.0003;
+            qDebug() << params.rotSpeed;
+            return RetVal(STATE::SPIRAL, params.advSpeed, params.rotSpeed);
+        }else
+        {
+            return RetVal(STATE::TURN, 0.f, 0.f);
         }
+    }else
+    {
+        return RetVal(STATE::FOLLOWWALL, params.MAX_ADV_SPEED, 0.f);
     }
-    return RetVal(STATE::SPIRAL, params.MAX_ADV_SPEED / 2, 0.f);
 }
 
 

@@ -67,8 +67,8 @@ class SpecificWorker : public GenericWorker
             std::string LIDAR_NAME_HIGH = "helios";
             QRectF GRID_MAX_DIM{-5000, 2500, 10000, -5000};
             //spiral
-            float AngularSpeed=1.1;
-            float forwardSpeed=0.1;
+            float advSpeed=0;
+            float rotSpeed=MAX_ROT_SPEED;
             //spiralreverse
             float aumento=ROBOT_WIDTH;
             int giros=0;
