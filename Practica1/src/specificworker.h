@@ -60,6 +60,10 @@ class SpecificWorker : public GenericWorker
             float STOP_THRESHOLD = 700; // mm
             float ADVANCE_THRESHOLD = ROBOT_WIDTH * 3; // mm
             float LIDAR_FRONT_SECTION = 0.2; // rads, aprox 12 degrees
+
+            //forward
+            bool forward = false;
+
             // wall
             float LIDAR_RIGHT_SIDE_SECTION = M_PI/3; // rads, 90 degrees
             float LIDAR_LEFT_SIDE_SECTION = -M_PI/3; // rads, 90 degrees

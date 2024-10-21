@@ -154,6 +154,7 @@ void SpecificWorker::compute()
  */
 SpecificWorker::RetVal SpecificWorker::forward(auto &points)
 {
+    params.forward=true;
     // check if the central part of the filtered_points vector has a minimum lower than the size of the robot
     auto offset_begin = closest_lidar_index_to_given_angle(points, -params.LIDAR_FRONT_SECTION);
     auto offset_end = closest_lidar_index_to_given_angle(points, params.LIDAR_FRONT_SECTION);
@@ -186,6 +187,8 @@ SpecificWorker::RetVal SpecificWorker::turn(auto &points)
     // Instantiate the random number generator and distribution
     static std::mt19937 gen(rd());
     static std::uniform_int_distribution<int> dist(0, 1);
+    static std::mt19937 gen2(rd());
+    static std::uniform_int_distribution<int> dist2(params.ADVANCE_THRESHOLD, params.ADVANCE_THRESHOLD*10);
     static bool first_time = true;
     static int sign = 1;
 
@@ -203,11 +206,22 @@ SpecificWorker::RetVal SpecificWorker::turn(auto &points)
     // TURN
     auto min_point = std::min_element(std::begin(points) + offset_begin.value(), std::begin(points) + offset_end.value(), [](auto &a, auto &b)
     { return a.distance2d < b.distance2d; });
-    if (min_point != std::end(points) and min_point->distance2d > params.ADVANCE_THRESHOLD)
+
+    if(params.forward)
     {
-        first_time = true;
-        //return RetVal(STATE::FORWARD, 0.f, 0.f);
-        return RetVal(STATE::SPIRAL_REVERSE, 0.f, 0.f);
+        if (min_point != std::end(points) and min_point->distance2d > dist2(gen2))
+        {
+            first_time = true;
+            return RetVal(STATE::FORWARD, 0.f, 0.f);
+        }
+    }else
+    {
+        if (min_point != std::end(points) and min_point->distance2d > params.ADVANCE_THRESHOLD)
+        {
+            first_time = true;
+            //return RetVal(STATE::WALL, 0.f, 0.f);
+                return RetVal(STATE::SPIRAL_REVERSE, 0.f, 0.f);
+        }
     }
 
     /// Keep doing my business
@@ -254,7 +268,6 @@ SpecificWorker::RetVal SpecificWorker::wall(auto &filtered_points)
         first_time = true;
         return RetVal(STATE::TURN, 0.f, 0.f);  // stop and change state if obstacle detected
     }
-
     // get lidar readings in the sides of the robot
     RoboCompLidar3D::TPoint min_obj;
     auto res_right = closest_lidar_index_to_given_angle(filtered_points, params.LIDAR_RIGHT_SIDE_SECTION);
@@ -318,7 +331,7 @@ SpecificWorker::RetVal SpecificWorker::spiral(auto &filtered_points)
     {
         if(params.ADV_SPEED < params.MAX_ADV_SPEED and params.ROT_SPEED > 0)
         {
-            params.ADV_SPEED+= 1.2;
+            params.ADV_SPEED+= 1;
             params.ROT_SPEED-= 0.001;
             return RetVal(STATE::SPIRAL, params.ADV_SPEED, params.ROT_SPEED);
         }else
@@ -331,7 +344,7 @@ SpecificWorker::RetVal SpecificWorker::spiral(auto &filtered_points)
     {
         params.ADV_SPEED=0;
         params.ROT_SPEED=params.MAX_ROT_SPEED;
-        return RetVal(STATE::FORWARD, 0.f, 0.f);
+        return RetVal(STATE::SPIRAL_REVERSE, 0.f, 0.f);
     }
 
 }
@@ -359,6 +372,7 @@ SpecificWorker::RetVal SpecificWorker::spiral_reverse(auto &filtered_points)
         qDebug() << "GIROS: " << params.GIROS;
         if(params.GIROS >= 4)
         {
+            return RetVal(STATE::FORWARD, 0.f, 0.f);
             params.CONT_DIST+= params.ROBOT_WIDTH;
             params.GIROS = 0;
         }
