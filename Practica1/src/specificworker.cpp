@@ -122,10 +122,10 @@ void SpecificWorker::compute()
             label_state->setText("SPIRAL");
             break;
         }
-        case STATE::SPIRAL_REVERSE:
+        case STATE::WALL_REVERSE:
         {
-            ret_val = spiral_reverse(p_filter);
-            label_state->setText("SPIRAL REVERSE");
+            ret_val = wall_reverse(p_filter);
+            label_state->setText("WALL REVERSE");
             break;
         }
     }
@@ -154,7 +154,9 @@ void SpecificWorker::compute()
  */
 SpecificWorker::RetVal SpecificWorker::forward(auto &points)
 {
-    params.forward=true;
+    //params.forward=true;
+    qDebug() << "FORWARD";
+
     // check if the central part of the filtered_points vector has a minimum lower than the size of the robot
     auto offset_begin = closest_lidar_index_to_given_angle(points, -params.LIDAR_FRONT_SECTION);
     auto offset_end = closest_lidar_index_to_given_angle(points, params.LIDAR_FRONT_SECTION);
@@ -188,9 +190,11 @@ SpecificWorker::RetVal SpecificWorker::turn(auto &points)
     static std::mt19937 gen(rd());
     static std::uniform_int_distribution<int> dist(0, 1);
     static std::mt19937 gen2(rd());
-    static std::uniform_int_distribution<int> dist2(params.ADVANCE_THRESHOLD, params.ADVANCE_THRESHOLD*10);
+    static std::uniform_int_distribution<int> dist2(params.ADVANCE_THRESHOLD, params.ADVANCE_THRESHOLD*5);
     static bool first_time = true;
     static int sign = 1;
+
+    qDebug() << "TURN";
 
     /// check if the narrow central part of the filtered_points vector is free to go. If so stop turning and change state to FORWARD
     auto offset_begin = closest_lidar_index_to_given_angle(points, -params.LIDAR_FRONT_SECTION);
@@ -204,13 +208,15 @@ SpecificWorker::RetVal SpecificWorker::turn(auto &points)
     }
 
     // TURN
+    auto dist_obj_rd = dist2(gen2);
     auto min_point = std::min_element(std::begin(points) + offset_begin.value(), std::begin(points) + offset_end.value(), [](auto &a, auto &b)
     { return a.distance2d < b.distance2d; });
 
     if(params.forward)
     {
-        if (min_point != std::end(points) and min_point->distance2d > dist2(gen2))
+        if (min_point != std::end(points) and min_point->distance2d > dist_obj_rd)
         {
+            qDebug() << dist_obj_rd;
             first_time = true;
             return RetVal(STATE::FORWARD, 0.f, 0.f);
         }
@@ -220,7 +226,7 @@ SpecificWorker::RetVal SpecificWorker::turn(auto &points)
         {
             first_time = true;
             //return RetVal(STATE::WALL, 0.f, 0.f);
-                return RetVal(STATE::SPIRAL_REVERSE, 0.f, 0.f);
+            return RetVal(STATE::WALL_REVERSE, 0.f, 0.f);
         }
     }
 
@@ -258,6 +264,7 @@ SpecificWorker::RetVal SpecificWorker::wall(auto &filtered_points)
 {
     static bool first_time = true;
 
+    qDebug() << "WALL";
     // check if about to crash
     auto offset_begin = closest_lidar_index_to_given_angle(filtered_points, -params.LIDAR_FRONT_SECTION);
     auto offset_end = closest_lidar_index_to_given_angle(filtered_points, params.LIDAR_FRONT_SECTION);
@@ -331,7 +338,7 @@ SpecificWorker::RetVal SpecificWorker::spiral(auto &filtered_points)
     {
         if(params.ADV_SPEED < params.MAX_ADV_SPEED and params.ROT_SPEED > 0)
         {
-            params.ADV_SPEED+= 1;
+            params.ADV_SPEED+= 2;
             params.ROT_SPEED-= 0.001;
             return RetVal(STATE::SPIRAL, params.ADV_SPEED, params.ROT_SPEED);
         }else
@@ -344,16 +351,16 @@ SpecificWorker::RetVal SpecificWorker::spiral(auto &filtered_points)
     {
         params.ADV_SPEED=0;
         params.ROT_SPEED=params.MAX_ROT_SPEED;
-        return RetVal(STATE::SPIRAL_REVERSE, 0.f, 0.f);
+        return RetVal(STATE::TURN, 0.f, 0.f);
     }
 
 }
 
-
-SpecificWorker::RetVal SpecificWorker::spiral_reverse(auto &filtered_points)
+//En esta version solo da una vuelta y se va a FORWARD para aspirar mas terreno.
+SpecificWorker::RetVal SpecificWorker::wall_reverse(auto &filtered_points)
 {
     static bool first_time = true;
-
+    qDebug() << "WALL_REVERSE";
     // check if about to crash
     auto offset_begin = closest_lidar_index_to_given_angle(filtered_points, -params.LIDAR_FRONT_SECTION);
     auto offset_end = closest_lidar_index_to_given_angle(filtered_points, params.LIDAR_FRONT_SECTION);
@@ -370,11 +377,12 @@ SpecificWorker::RetVal SpecificWorker::spiral_reverse(auto &filtered_points)
         first_time = true;
         params.GIROS++;
         qDebug() << "GIROS: " << params.GIROS;
-        if(params.GIROS >= 4)
-        {
-            return RetVal(STATE::FORWARD, 0.f, 0.f);
+        if(params.GIROS ==4)
             params.CONT_DIST+= params.ROBOT_WIDTH;
-            params.GIROS = 0;
+        if(params.GIROS >= 8)
+        {
+            params.forward=true;
+            return RetVal(STATE::FORWARD, 0.f, 0.f);
         }
         return RetVal(STATE::TURN, 0.f, 0.f);  // stop and change state if obstacle detected
     }
@@ -408,16 +416,16 @@ SpecificWorker::RetVal SpecificWorker::spiral_reverse(auto &filtered_points)
 
     // check the left/right hand side and the distance to the wall conditions
     if(min_obj.phi >= 0 and error >= 0)   // right hand side and too far from the wall: turn left
-        return RetVal(STATE::SPIRAL_REVERSE, params.MAX_ADV_SPEED * adv_brake, params.MAX_ROT_SPEED * rot_brake);
+        return RetVal(STATE::WALL_REVERSE, params.MAX_ADV_SPEED * adv_brake, params.MAX_ROT_SPEED * rot_brake);
     if(min_obj.phi >= 0 and error < 0)   // right hand side and too close to the wall: turn right
-        return RetVal(STATE::SPIRAL_REVERSE, params.MAX_ADV_SPEED * adv_brake, -params.MAX_ROT_SPEED * rot_brake);
+        return RetVal(STATE::WALL_REVERSE, params.MAX_ADV_SPEED * adv_brake, -params.MAX_ROT_SPEED * rot_brake);
     if(min_obj.phi < 0 and error >= 0)   // left hand side and too far from the wall: turn left
-        return RetVal(STATE::SPIRAL_REVERSE, params.MAX_ADV_SPEED * adv_brake, -params.MAX_ROT_SPEED * rot_brake);
+        return RetVal(STATE::WALL_REVERSE, params.MAX_ADV_SPEED * adv_brake, -params.MAX_ROT_SPEED * rot_brake);
     if(min_obj.phi < 0 and error < 0)   // left hand side and too close to the wall: turn right
-        return RetVal(STATE::SPIRAL_REVERSE, params.MAX_ADV_SPEED * adv_brake, params.MAX_ROT_SPEED * rot_brake);
+        return RetVal(STATE::WALL_REVERSE, params.MAX_ADV_SPEED * adv_brake, params.MAX_ROT_SPEED * rot_brake);
 
     qWarning() << "We should not reach this point. Stopping";
-    return RetVal (STATE::SPIRAL_REVERSE, 0.f, 0.f);
+    return RetVal (STATE::WALL_REVERSE, 0.f, 0.f);
 }
 
 /**
