@@ -88,14 +88,14 @@ class SpecificWorker : public GenericWorker
         AbstractGraphicViewer *viewer;
 
         // state machine
-        enum class STATE {FORWARD, TURN, WALL, SPIRAL, SPIRAL_REVERSE};
+        enum class STATE {FORWARD, TURN, WALL, SPIRAL, WALL_REVERSE};
         STATE state = STATE::SPIRAL;
         using RetVal = std::tuple<STATE, float, float>;
         RetVal forward(auto &filtered_points);
         RetVal turn(auto &filtered_points);
         RetVal wall(auto &filtered_points);
         RetVal spiral(auto &filtered_points);
-        RetVal spiral_reverse(auto &filtered_points);
+        RetVal wall_reverse(auto &filtered_points);
 
         // draw
         void draw_lidar(auto &filtered_points, QGraphicsScene *scene);
