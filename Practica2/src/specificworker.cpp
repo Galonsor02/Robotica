@@ -19,7 +19,6 @@
 #include "specificworker.h"
 #include <cppitertools/enumerate.hpp>
 #include <cppitertools/range.hpp>
-
 /**
 * \brief Default constructor
 */
@@ -197,33 +196,40 @@ SpecificWorker::RobotSpeed SpecificWorker::state_machine(const RoboCompVisualEle
  // State function to track a person
 SpecificWorker::RetVal SpecificWorker::track(const RoboCompVisualElementsPub::TObject &person)
 {
+  //FRENO QUE MULTIPLICA AL AVANCE
+  qDebug() << "track";
     //qDebug() << __FUNCTION__;
     // variance of the gaussian function is set by the user giving a point xset where the function must be yset, and solving for s
-//    auto gaussian_break = [](float x) -> float
-//    {
-//        // gaussian function where x is the rotation speed -1 to 1. Returns 1 for x = 0 and 0.4 for x = 0.5
-//        const double xset = 0.5;
-//        const double yset = 0.6;
+   //auto gaussian_break = [](float x) -> float{
+        // gaussian function where x is the rotation speed -1 to 1. Returns 1 for x = 0 and 0.4 for x = 0.5
+       // const double xset = 0.5;
+      // const double yset = 0.6;
           // compute the variance s so the function is yset for x = xset
-          // float s =
-//        return (float)exp(-x*x/s);
-//    };
+           //float s = (float)exp(-x*x/s); return s;
+    //};
 
-    auto distance = std::hypot(std::stof(person.attributes.at("x_pos")), std::stof(person.attributes.at("y_pos")));
+
+    auto x =std::stof(person.attributes.at("x_pos"));
+    auto y=std::stof(person.attributes.at("y_pos"));
+    auto distance = std::hypot(x,y);
     lcdNumber_dist_to_person->display(distance);
-
     // check if the distance to the person is lower than a threshold
-    if(distance < params.PERSON_MIN_DIST)
+    if(distance < params.PERSON_MIN_DIST+300)
     {   qWarning() << __FUNCTION__ << "Distance to person lower than threshold"; return RetVal(STATE::WAIT, 0.f, 0.f);}
 
+    float angle= std::atan2(x,y);
+    if(angle != 0)
+        return RetVal(STATE::TRACK, 0.f,params.MAX_ROT_SPEED/2);
     /// TRACK   PUT YOUR CODE HERE
+    return RetVal(STATE::TRACK, params.MAX_ADV_SPEED, 0.f);
 
-    return RetVal(STATE::TRACK, 0, 0);
+    //return RetVal(STATE::TRACK, 0, 0);
 }
 //
 SpecificWorker::RetVal SpecificWorker::wait(const RoboCompVisualElementsPub::TObject &person)
 {
     //qDebug() << __FUNCTION__ ;
+    qDebug() << "wait";
     // check if the person is further than a threshold
     if(std::hypot(std::stof(person.attributes.at("x_pos")), std::stof(person.attributes.at("y_pos"))) > params.PERSON_MIN_DIST + 100)
         return RetVal(STATE::TRACK, 0.f, 0.f);
