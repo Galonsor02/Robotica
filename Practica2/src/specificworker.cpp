@@ -216,12 +216,8 @@ SpecificWorker::RetVal SpecificWorker::track(const RoboCompVisualElementsPub::TO
     // check if the distance to the person is lower than a threshold
     if(distance < params.PERSON_MIN_DIST+300)
     {   qWarning() << __FUNCTION__ << "Distance to person lower than threshold"; return RetVal(STATE::WAIT, 0.f, 0.f);}
-
-    float angle= std::atan2(x,y);
-    if(angle != 0)
-        return RetVal(STATE::TRACK, 0.f,params.MAX_ROT_SPEED/2);
     /// TRACK   PUT YOUR CODE HERE
-    return RetVal(STATE::TRACK, params.MAX_ADV_SPEED, 0.f);
+    return RetVal(STATE::TRACK, params.MAX_ADV_SPEED, std::atan2(x,y));
 
     //return RetVal(STATE::TRACK, 0, 0);
 }
