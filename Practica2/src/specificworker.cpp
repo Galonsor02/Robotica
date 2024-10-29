@@ -91,11 +91,11 @@ void SpecificWorker::compute()
 
     // get person and draw on viewer
     auto person = find_person_in_data(data.objects);
-    if(not person.has_value())
-    { qWarning() << __FUNCTION__ << QString::fromStdString(person.error()); return; }   // STOP THE ROBOT
+//    if(not person.has_value())
+//      {qWarning() << __FUNCTION__ << QString::fromStdString(person.error());return;    }   // STOP THE ROBOT
 
     // call state machine to track person
-    const auto &[adv, rot] = state_machine(person.value());
+    const auto &[adv, rot] = state_machine(person);
 
     // move the robot
     try{ omnirobot_proxy->setSpeedBase(0.f, adv, rot); }
@@ -137,8 +137,8 @@ RoboCompLidar3D::TData SpecificWorker::read_lidar_helios()
     catch(const Ice::Exception &e){std::cout << e << std::endl;}
     return {};
 }
-std::expected<RoboCompVisualElementsPub::TObject, std::string>
-SpecificWorker::find_person_in_data(const std::vector<RoboCompVisualElementsPub::TObject> &objects)
+
+std::expected<RoboCompVisualElementsPub::TObject, std::string> SpecificWorker::find_person_in_data(const std::vector<RoboCompVisualElementsPub::TObject> &objects)
 {
     if(objects.empty())
         return std::unexpected("Empty objects in method <find_person_in_data>");
@@ -156,28 +156,36 @@ SpecificWorker::find_person_in_data(const std::vector<RoboCompVisualElementsPub:
 /// STATE  MACHINE
 //////////////////////////////////////////////////////////////////
 // State machine to track a person
-SpecificWorker::RobotSpeed SpecificWorker::state_machine(const RoboCompVisualElementsPub::TObject &person)
+SpecificWorker::RobotSpeed SpecificWorker::state_machine(const std::expected<RoboCompVisualElementsPub::TObject, std::string> &person)
 {
     // call the appropriate state function
     RetVal res;
     if(pushButton_stop->isChecked())    // stop if buttom is pressed
         state = STATE::STOP;
 
+    if(not person.has_value())
+        state = STATE::SEARCH;
+
     switch(state)
     {
         case STATE::TRACK:
-            res = track(person);
+            res = track(person.value());
             label_state->setText("TRACK");
             break;
         case STATE::WAIT:
-            res = wait(person);
+            res = wait(person.value());
             label_state->setText("WAIT");
             break;
         case STATE::STOP:
             res = stop();
             label_state->setText("STOP");
             break;
+        case STATE::SEARCH:
+            res= search();
+            label_state->setText("SEARCH");
+            break;
     }
+
     auto &[st, speed, rot] = res;
     state = st;
     return {speed, rot};
@@ -199,28 +207,47 @@ SpecificWorker::RetVal SpecificWorker::track(const RoboCompVisualElementsPub::TO
   //FRENO QUE MULTIPLICA AL AVANCE
   qDebug() << "track";
     //qDebug() << __FUNCTION__;
+
     // variance of the gaussian function is set by the user giving a point xset where the function must be yset, and solving for s
-   //auto gaussian_break = [](float x) -> float{
-        // gaussian function where x is the rotation speed -1 to 1. Returns 1 for x = 0 and 0.4 for x = 0.5
-       // const double xset = 0.5;
-      // const double yset = 0.6;
-          // compute the variance s so the function is yset for x = xset
-           //float s = (float)exp(-x*x/s); return s;
-    //};
+   auto gaussian_break = [](float x) -> float{
+         //gaussian function where x is the rotation speed -1 to 1. Returns 1 for x = 0 and 0.4 for x = 0.5
+        	const double xset = 0.5;
+       		const double yset = 0.6;
+           //compute the variance s so the function is yset for x = xset
+           float s = (float)exp(-x*x/s); return s;
+    };
 
 
     auto x =std::stof(person.attributes.at("x_pos"));
     auto y=std::stof(person.attributes.at("y_pos"));
+    qDebug() << "x: " << x << " y: " << y;
     auto distance = std::hypot(x,y);
     lcdNumber_dist_to_person->display(distance);
+
     // check if the distance to the person is lower than a threshold
     if(distance < params.PERSON_MIN_DIST+300)
     {   qWarning() << __FUNCTION__ << "Distance to person lower than threshold"; return RetVal(STATE::WAIT, 0.f, 0.f);}
     /// TRACK   PUT YOUR CODE HERE
     return RetVal(STATE::TRACK, params.MAX_ADV_SPEED, std::atan2(x,y));
-
     //return RetVal(STATE::TRACK, 0, 0);
 }
+
+SpecificWorker::RetVal SpecificWorker::search()
+{
+  qDebug() << "search";
+//  auto x =std::stof(person.attributes.at("x_pos"));
+//  auto y =std::stof(person.attributes.at("y_pos"));
+//  qDebug() << "x: " << x << " y: " << y;
+//  auto distance = std::hypot(x,y);
+//  if(distance != NULL || distance != 0)
+//  {
+//    return RetVal(STATE::TRACK, 0.f, 0.f);
+//  }
+  return RetVal(STATE::SEARCH, 0.f, params.MAX_ROT_SPEED);
+}
+
+
+
 //
 SpecificWorker::RetVal SpecificWorker::wait(const RoboCompVisualElementsPub::TObject &person)
 {

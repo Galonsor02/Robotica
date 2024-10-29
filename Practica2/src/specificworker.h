@@ -68,6 +68,8 @@ class SpecificWorker : public GenericWorker
             float LIDAR_FRONT_SECTION = 0.2; // rads, aprox 12 degrees
             // person
             float PERSON_MIN_DIST = 800; // mm
+            //SEARCH
+            bool find_person = true;
 
             std::string LIDAR_NAME_LOW = "bpearl";
             std::string LIDAR_NAME_HIGH = "helios";
@@ -79,15 +81,16 @@ class SpecificWorker : public GenericWorker
         // state machine
         enum class STATE
         {
-            TRACK, STOP, WAIT
+            TRACK, STOP, WAIT, SEARCH
         };
         STATE state = STATE::TRACK;
         using RetVal = std::tuple<STATE, float, float>;
         using RobotSpeed = std::tuple<float, float>;
         RetVal track(const RoboCompVisualElementsPub::TObject &person);
+        RetVal search();
         RetVal wait(const RoboCompVisualElementsPub::TObject &person);
         RetVal stop();
-        RobotSpeed state_machine(const RoboCompVisualElementsPub::TObject &person);
+        RobotSpeed state_machine(const std::expected<RoboCompVisualElementsPub::TObject, std::string> &person);
 
         // lidar
         RoboCompLidar3D::TData read_lidar_bpearl();
