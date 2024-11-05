@@ -173,30 +173,7 @@ std::vector<Eigen::Vector2f> SpecificWorker::read_lidar_helios()
     catch(const Ice::Exception &e){std::cout << e << std::endl;}
     return {};
 }
-void SpecificWorker::update_room_model(const auto &points, QGraphicsScene *scene)
-{
-    // transform points to a std::vector<Eigen::Vector2f>
-    std::vector<Eigen::Vector2f> points_eigen;
-    std::ranges::transform(points, std::back_inserter(points_eigen),
-                           [](auto &a){ return Eigen::Vector2f(a.x, a.y);});
 
-    // compute room features
-    const auto &[_, __, corners, triple_corners] = room_detector.compute_features(points_eigen, &viewer->scene);
-
-    // if triple_corners is empty, stick with the previous room model
-    if(triple_corners.empty())
-    {
-        qWarning() << __FUNCTION__ << "Empty triple corners";
-        return;
-    }
-
-    // update current room model with new measures
-    const auto &[c1,c2,c3, c4] = triple_corners[0];
-
-    room_model.update(c1, c2, c3, c4);
-    room_model.set_valid(true);
-
-}
  /* Removes points that are on the walls from the given set of points.
  *
  * This function filters out points that are on the walls based on the room model.
@@ -206,6 +183,12 @@ void SpecificWorker::update_room_model(const auto &points, QGraphicsScene *scene
  * param points The set of points to be filtered.
  * return A vector of polygons representing the filtered points.
  */
+std::vector<QLineF>>
+       SpecificWorker::detect_wall_lines(const auto &helios, QGraphicsScene *)){
+
+}
+
+
 std::tuple<std::vector<Eigen::Vector2f>, std::vector<QLineF>>
         SpecificWorker::remove_wall_points(const auto &helios, const auto &bpearl)
 {
@@ -213,6 +196,31 @@ std::tuple<std::vector<Eigen::Vector2f>, std::vector<QLineF>>
     std::vector<QLineF> ls;
 
     // your code here
+    std::vector<Eigen::Vector2f> total_points;
+    total_points.reserve(helios.size() + bpearl.size());
+    for(const auto &h: helios)
+      total_points.emplace_back(h.x(), h.y());
+    for(const auto &p: bpearl)
+        total_points.emplace_back(p.x(), p.y());
+    if(total_points.empty())
+      {qWarning() << __FUNCTION__ << "No Lidar Points found"; return std::make_tuple(points_inside, ls);}
+
+    std::vector<std::pair<int, QLineF>> listPoints = [](const auto& tupla) -> std::vector<std::pair<int, QLineF>> {
+      return std::get<0>(tupla);
+    }(room_detector.compute_features(total_points, &viewer->scene));
+
+    for(const auto& [votes, line] : listPoints)
+    {
+      if(!line.isNull())
+      {qWarning() << __FUNCTION__ << "No Line in lisPoints or votes empty"; return std::make_tuple(points_inside, ls);}
+      if (votes >= params.ROBOT_WIDTH)
+      {
+           ls.emplace_back(line);
+
+           QPen wall_pen(Qt::yellow, 3);
+           viewer->scene.addLine(line,wall_pen);
+      }
+    }
 
     return std::make_tuple(points_inside, ls);
 }
