@@ -230,9 +230,14 @@ lcdNumber_dist_to_person->display(distance);
 // check if the distance to the person is lower than a threshold
 if(distance < params.PERSON_MIN_DIST)
 {   qWarning() << __FUNCTION__ << "Distance to person lower than threshold"; return RetVal(STATE::WAIT, 0.f, 0.f);}
-
+if(not person)
+{   qWarning() << __FUNCTION__ << "No person found"; return RetVal(STATE::SEARCH, 0.f, 0.f);}
 /// TRACK   PUT YOUR CODE HERE
-auto rot_speed = std::atan2(x,y);
+auto angulo = std::atan2(x,y);
+auto rot_speed = 1.1 * Sangulo + 0.5 *(angulo - params.ANGLE_ANTERIOR);
+//SE CALCULA LAVELOCIDAD DE ROTACION CON EL PID, LA DIFERENCIA DEL ANGULO ACTUAL Y EL ANTERIOR QUE HEMOS TENIDO.
+params.ANGLE_ANTERIOR = angulo;
+
 //return RetVal(STATE::TRACK, params.MAX_ADV_SPEED , rot_speed);
 //return RetVal(STATE::TRACK, 0, 0);
 return RetVal(STATE::TRACK, params.MAX_ADV_SPEED*gaussian_break(rot_speed), rot_speed);
@@ -241,14 +246,7 @@ return RetVal(STATE::TRACK, params.MAX_ADV_SPEED*gaussian_break(rot_speed), rot_
 SpecificWorker::RetVal SpecificWorker::search()
 {
   qDebug() << "search";
-//  auto x =std::stof(person.attributes.at("x_pos"));
-//  auto y =std::stof(person.attributes.at("y_pos"));
-//  qDebug() << "x: " << x << " y: " << y;
-//  auto distance = std::hypot(x,y);
-//  if(distance != NULL || distance != 0)
-//  {
-//    return RetVal(STATE::TRACK, 0.f, 0.f);
-//  }
+
   return RetVal(STATE::SEARCH, 0.f, params.MAX_ROT_SPEED/2);
 }
 

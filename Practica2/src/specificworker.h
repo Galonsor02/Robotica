@@ -68,6 +68,8 @@ class SpecificWorker : public GenericWorker
             float LIDAR_FRONT_SECTION = 0.2; // rads, aprox 12 degrees
             // person
             float PERSON_MIN_DIST = 1200; // mm
+            //TRACK
+            float ANGLE_ANTERIOR = 0;
             //SEARCH
             bool find_person = true;
 
