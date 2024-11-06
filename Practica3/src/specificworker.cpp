@@ -84,11 +84,12 @@ void SpecificWorker::compute()
     //draw_lidar(ldata.points, &viewer->scene);
 
     /// remove wall lines
-    auto new_data = remove_wall_points(helios_points, bpearl_points);
-    auto &[filtered_points, walls_polys] = new_data;
+    auto lines = detect_wall_lines(helios_points, &viewer->scene);
+    auto filtered_points = remove_wall_points(&lines, &bpearl_points);
+    //auto &[filtered_points, walls_polys] = new_data;
 
     /// get walls as polygons
-    std::vector<QPolygonF> obstacles = get_walls_as_polygons(walls_polys, params.ROBOT_WIDTH/2);
+    std::vector<QPolygonF> obstacles = get_walls_as_polygons(lines, params.ROBOT_WIDTH/2);
 
     /// get obstacles as polygons using DBSCAN
     auto obs = rc::dbscan(filtered_points, params.ROBOT_WIDTH, 2, params.ROBOT_WIDTH);
@@ -183,46 +184,27 @@ std::vector<Eigen::Vector2f> SpecificWorker::read_lidar_helios()
  * param points The set of points to be filtered.
  * return A vector of polygons representing the filtered points.
  */
-std::vector<QLineF>>
-       SpecificWorker::detect_wall_lines(const auto &helios, QGraphicsScene *)){
-
+std::vector<QLineF>
+       SpecificWorker::detect_wall_lines(const auto &helios, QGraphicsScene *scene)
+{
+    std::vector<QLineF> ls;
+    const auto &[lines,_,__,___]=room_detector.compute_features(helios, &viewer->scene);
+    for(auto &l: lines)
+    {
+        ls.emplace_back(l.second);
+        QPen wall_pen(Qt::yellow, 3);
+        scene->addLine(l.second,wall_pen);
+    }
+    return ls;
 }
 
-
-std::tuple<std::vector<Eigen::Vector2f>, std::vector<QLineF>>
-        SpecificWorker::remove_wall_points(const auto &helios, const auto &bpearl)
+//solo devuelve el vector eigen
+std::vector<Eigen::Vector2f>
+        SpecificWorker::remove_wall_points(const auto &lines, const auto &bpearl)
 {
     std::vector<Eigen::Vector2f> points_inside;
-    std::vector<QLineF> ls;
 
-    // your code here
-    std::vector<Eigen::Vector2f> total_points;
-    total_points.reserve(helios.size() + bpearl.size());
-    for(const auto &h: helios)
-      total_points.emplace_back(h.x(), h.y());
-    for(const auto &p: bpearl)
-        total_points.emplace_back(p.x(), p.y());
-    if(total_points.empty())
-      {qWarning() << __FUNCTION__ << "No Lidar Points found"; return std::make_tuple(points_inside, ls);}
-
-    std::vector<std::pair<int, QLineF>> listPoints = [](const auto& tupla) -> std::vector<std::pair<int, QLineF>> {
-      return std::get<0>(tupla);
-    }(room_detector.compute_features(total_points, &viewer->scene));
-
-    for(const auto& [votes, line] : listPoints)
-    {
-      if(!line.isNull())
-      {qWarning() << __FUNCTION__ << "No Line in lisPoints or votes empty"; return std::make_tuple(points_inside, ls);}
-      if (votes >= params.ROBOT_WIDTH)
-      {
-           ls.emplace_back(line);
-
-           QPen wall_pen(Qt::yellow, 3);
-           viewer->scene.addLine(line,wall_pen);
-      }
-    }
-
-    return std::make_tuple(points_inside, ls);
+    return points_inside;
 }
 std::expected<RoboCompVisualElementsPub::TObject, std::string>
 SpecificWorker::find_person_in_data(const std::vector<RoboCompVisualElementsPub::TObject> &objects)
