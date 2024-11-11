@@ -192,8 +192,6 @@ std::vector<QLineF>
     for(auto &l: lines)
     {
         ls.emplace_back(l.second);
-        QPen wall_pen(Qt::yellow, 3);
-        scene->addLine(l.second,wall_pen);
     }
     return ls;
 }
@@ -203,6 +201,48 @@ std::vector<Eigen::Vector2f>
         SpecificWorker::remove_wall_points(const auto &lines, const auto &bpearl)
 {
     std::vector<Eigen::Vector2f> points_inside;
+
+    // auto not_near_wall = [&](const Eigen::Vector2f &point) -> bool {
+    //     for (const auto& line : *lines) {
+    //         Eigen::Vector2f p1(line.x1(), line.y1());
+    //         Eigen::Vector2f p2(line.x2(), line.y2());
+    //
+    //         // Crear la línea parametrizada con dos puntos
+    //         Eigen::ParametrizedLine<float, 2> parametrized_line(p1, p2 - p1);
+    //
+    //         // Calcular la distancia desde el punto a la línea
+    //         float distance = parametrized_line.distance(point);
+    //
+    //         // Si la distancia es menor que el umbral, el punto está cerca de la pared
+    //         if (distance < params.WallDistance) {
+    //             return false;  // Si el punto está cerca de alguna pared, lo excluimos
+    //         }
+    //     }
+    //     return true;  // Si el punto no está cerca de ninguna pared, lo mantenemos
+    // };
+    // std::ranges::copy_if(*bpearl,std::back_inserter(points_inside),not_near_wall);
+    for (const auto &point : *bpearl)
+    {
+        params.point_near_line = true;
+
+        // Comprobar la distancia a cada línea
+        for (const auto &line : *lines)
+        {
+            Eigen::Vector2f p1(line.x1(), line.y1());
+            Eigen::Vector2f p2(line.x2(), line.y2());
+            auto eigen_line = Eigen::ParametrizedLine<float, 2>::Through(p1, p2);
+            float distance = eigen_line.distance(point);
+            if (distance < params.WallDistance)
+            {
+                params.point_near_line = false;
+                break;
+            }
+        }
+        if(params.point_near_line)
+        {
+            points_inside.push_back(point);
+        }
+    }
 
     return points_inside;
 }

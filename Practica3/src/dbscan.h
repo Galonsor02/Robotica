@@ -10,7 +10,7 @@
 #include <map>
 #include <QPolygonF>
 #include <Eigen/Dense>
-
+#include <cppitertools/sliding_window.hpp>
 namespace rc
 {
         std::vector<QPolygonF> dbscan(const std::vector<Eigen::Vector2f> &points,

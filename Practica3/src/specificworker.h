@@ -37,6 +37,7 @@
 #include "dbscan.h"
 #include <locale>
 #include <Eigen/Geometry>  // For ParametrizedLine
+#include <cppitertools/sliding_window.hpp>
 
 
 class SpecificWorker : public GenericWorker
@@ -68,7 +69,9 @@ class SpecificWorker : public GenericWorker
             float LIDAR_FRONT_SECTION = 0.2; // rads, aprox 12 degrees
             // person
             float PERSON_MIN_DIST = 1100; // mm
-
+            //remove wall
+            bool point_near_line = false;
+            float WallDistance = 100;
             std::string LIDAR_NAME_LOW = "bpearl";
             std::string LIDAR_NAME_HIGH = "helios";
             QRectF GRID_MAX_DIM{-5000, 2500, 10000, -5000};
