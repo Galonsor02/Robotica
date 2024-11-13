@@ -14,23 +14,8 @@
 
 namespace rc
 {
-    QPolygonF enlarge_polygon(const QPolygonF &polygon, qreal amount)
-    {
-        QPolygonF enlargedPolygon;
-        QPolygonF polygonCopy = polygon;
-        polygonCopy << QPointF(polygon[0]);
-        polygonCopy << QPointF(polygon[1]);
-        for(const auto vs : iter::sliding_window(polygonCopy, 3))
-        {
-
-        }
-
-
-        return enlargedPolygon;
-    }
     std::vector<QPolygonF> dbscan(const std::vector<Eigen::Vector2f> &points,
-                                  float eps, int min_points,
-                                  float robot_width)
+                                  float eps, int min_points)
     {
         if(points.empty()) {std::cout << __FUNCTION__ << " No points" << std::endl; return {};}
         arma::mat arma_data(2, points.size());
@@ -63,11 +48,10 @@ namespace rc
             QPolygonF poly;
             for (const auto &p: hull)
                 poly << QPointF(p.x, p.y);
-
-            // enlarge the polygon to account for the robot size
-
-            list_poly.emplace_back(enlarge_polygon(poly,robot_width));
+            list_poly.emplace_back(poly);
         }
         return list_poly;
     };
 }
+
+
