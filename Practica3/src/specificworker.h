@@ -90,7 +90,7 @@ class SpecificWorker : public GenericWorker
         using RetVal = std::tuple<STATE, float, float>;
         using RobotSpeed = std::tuple<float, float>;
         using TPerson = std::expected<RoboCompVisualElementsPub::TObject, std::string>;
-        RetVal track(const TPerson &person, const std::vector<Eigen::Vector2f> &path);
+        RetVal track( const std::vector<Eigen::Vector2f> &path);
         RetVal wait(const TPerson &person);
         RetVal search(const TPerson &person);
         RetVal stop();

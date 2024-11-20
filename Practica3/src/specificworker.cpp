@@ -105,7 +105,7 @@ void SpecificWorker::compute()
 
     /// find obstacles
     auto obstacles = rc::dbscan(bpearl, params.ROBOT_WIDTH, 2);
-
+	obstacles = enlarge_polygons(obstacles, params.ROBOT_WIDTH/2);
     /// check if there is new YOLO data in buffer
     std::expected<RoboCompVisualElementsPub::TObject, std::string> tp_person = std::unexpected("No person found");
     auto [data_] = buffer.read_first();
@@ -117,7 +117,7 @@ void SpecificWorker::compute()
         obstacles = find_person_polygon_and_remove(tp_person.value(), obstacles);
 
     /// enlarge obstacles
-    obstacles = enlarge_polygons(obstacles, params.ROBOT_WIDTH);
+
     draw_obstacles(obstacles, &viewer->scene, Qt::darkMagenta);
 
     /// get walls as polygons
@@ -323,7 +323,7 @@ SpecificWorker::RobotSpeed SpecificWorker::state_machine(const TPerson &person, 
     switch(state)
     {
         case STATE::TRACK:
-            res = track(person, path);
+            res = track( path);
             label_state->setText("TRACK");
             break;
         case STATE::WAIT:
@@ -356,7 +356,7 @@ SpecificWorker::RobotSpeed SpecificWorker::state_machine(const TPerson &person, 
  * @return A `RetVal` tuple consisting of the state (`FORWARD` or `TURN`), speed, and rotation.
  */
  // State function to track a person
-SpecificWorker::RetVal SpecificWorker::track(const TPerson &person, const std::vector<Eigen::Vector2f> &path)
+SpecificWorker::RetVal SpecificWorker::track(const std::vector<Eigen::Vector2f> &path)
 {
     static float ant_angle_error = 0.0;
     //qDebug() << __FUNCTION__;
@@ -371,14 +371,12 @@ SpecificWorker::RetVal SpecificWorker::track(const TPerson &person, const std::v
         return (float)exp(-x*x/s);
     };
 
-    if(not person)
-    {  qWarning() << __FUNCTION__ << "No person found";  return RetVal(STATE::SEARCH, 0.f, 0.f); }
     if(path.empty())
-    {  qWarning() << __FUNCTION__ << "No path found";
-    float angle_erro = atan2(std::stof(person.value().attributes.at("x_pos")),std::stof(person.value().attributes.at("y_pos")));  return RetVal(STATE::TRACK, 500, angle_erro); }
-    Eigen::Vector2f target = path[1];
-    auto distanceHuman = std::hypot(std::stof(person.value().attributes.at("x_pos")),std::stof(person.value().attributes.at("y_pos")));
+    {  qWarning() << __FUNCTION__ << "No person found";  return RetVal(STATE::SEARCH, 0.f, 0.f); }
+	Eigen::Vector2f target = path[1];
+    Eigen::Vector2f finalPoint = path.back();
     auto distanceTarget = std::hypot(target.x(), target.y());
+    auto distanceHuman = std::hypot(finalPoint.x(), finalPoint.y());
     qDebug() << distanceTarget;
     qDebug() << distanceHuman;
     // check if the distance to the person is lower than a threshold
@@ -398,7 +396,7 @@ SpecificWorker::RetVal SpecificWorker::track(const TPerson &person, const std::v
     // advance brake is a value between 0 and 1 that decreases the speed when the robot is too close to the person
     float adv_brake = std::clamp(distanceTarget * 1.f/acc_distance - (params.PERSON_MIN_DIST / acc_distance), 0.f, 1.f);
     //return RetVal(STATE::TRACK, params.MAX_ADV_SPEED * rot_brake * adv_brake, rot_speed);
-    return RetVal(STATE::TRACK, 500 , rot_speed);
+    return RetVal(STATE::TRACK, 800  , rot_speed);
 }
 //
 SpecificWorker::RetVal SpecificWorker::wait(const TPerson &person)
