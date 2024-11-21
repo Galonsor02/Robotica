@@ -138,7 +138,7 @@ void SpecificWorker::compute()
     }
 
     // call state machine to track person
-    const auto &[adv, rot] = state_machine(tp_person, path);
+    const auto &[adv, rot] = state_machine(path);
 
     // plot on UI
     if(tp_person)
@@ -313,7 +313,7 @@ std::vector<QPolygonF> SpecificWorker::find_person_polygon_and_remove(const Robo
 /// STATE  MACHINE
 //////////////////////////////////////////////////////////////////
 // State machine to track a person
-SpecificWorker::RobotSpeed SpecificWorker::state_machine(const TPerson &person, const std::vector<Eigen::Vector2f> &path)
+SpecificWorker::RobotSpeed SpecificWorker::state_machine( const std::vector<Eigen::Vector2f> &path)
 {
     // call the appropriate state function
     RetVal res;
@@ -327,11 +327,11 @@ SpecificWorker::RobotSpeed SpecificWorker::state_machine(const TPerson &person, 
             label_state->setText("TRACK");
             break;
         case STATE::WAIT:
-            res = wait(person);
+            res = wait(path);
             label_state->setText("WAIT");
             break;
         case STATE::SEARCH:
-            res = search(person);
+            res = search(path);
             label_state->setText("SEARCH");
             break;
         case STATE::STOP:
@@ -372,7 +372,7 @@ SpecificWorker::RetVal SpecificWorker::track(const std::vector<Eigen::Vector2f> 
     };
 
     if(path.empty())
-    {  qWarning() << __FUNCTION__ << "No person found";  return RetVal(STATE::SEARCH, 0.f, 0.f); }
+    {  qWarning() << __FUNCTION__ << "No path found";  return RetVal(STATE::SEARCH, 0.f, 0.f); }
 	Eigen::Vector2f target = path[1];
     Eigen::Vector2f finalPoint = path.back();
     auto distanceTarget = std::hypot(target.x(), target.y());
@@ -399,23 +399,23 @@ SpecificWorker::RetVal SpecificWorker::track(const std::vector<Eigen::Vector2f> 
     return RetVal(STATE::TRACK, 800  , rot_speed);
 }
 //
-SpecificWorker::RetVal SpecificWorker::wait(const TPerson &person)
+SpecificWorker::RetVal SpecificWorker::wait(const std::vector<Eigen::Vector2f> &path)
 {
-    if(not person)
-    {  qWarning() << __FUNCTION__ << "No person found"; return RetVal(STATE::TRACK, 0.f, 0.f); }
+    if(path.empty())
+    {  qWarning() << __FUNCTION__ << "No path found"; return RetVal(STATE::TRACK, 0.f, 0.f); }
 
     // check if the person is further than a threshold
-    if(std::hypot(std::stof(person.value().attributes.at("x_pos")), std::stof(person.value().attributes.at("y_pos"))) > params.PERSON_MIN_DIST + 100)
+    if(std::hypot(path.back().x(), path.back().y()) > params.PERSON_MIN_DIST + 100)
         return RetVal(STATE::TRACK, 0.f, 0.f);
 
     return RetVal(STATE::WAIT, 0.f, 0.f);
 
 }
 // Search when no person is found
-SpecificWorker::RetVal SpecificWorker::search(const TPerson &person)
+SpecificWorker::RetVal SpecificWorker::search(const std::vector<Eigen::Vector2f> &path)
 {
-    if(person)
-    {  qWarning() << __FUNCTION__ << "Person found, moving to TRACK"; return RetVal(STATE::TRACK, 0.f, 0.f); }
+    if(!path.empty())
+    {  qWarning() << __FUNCTION__ << "Path found, moving to TRACK"; return RetVal(STATE::TRACK, 0.f, 0.f); }
 
     return RetVal(STATE::SEARCH, 0.f, params.SEARCH_ROT_SPEED);
 }

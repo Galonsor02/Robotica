@@ -1,3 +1,4 @@
+cmake_minimum_required(VERSION 3.28)
 IF ( "$ENV{ROBOCOMP}" STREQUAL "")
   MESSAGE(WARNING "ROBOCOMP variable not set. Using the default value: /home/robocomp/robocomp")
   SET (ENV{ROBOCOMP} "/home/robocomp/robocomp/")
