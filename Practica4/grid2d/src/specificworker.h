@@ -74,12 +74,30 @@ private:
 		float k1 = 1.1;  // proportional gain for the angle error;
 		float k2 = 0.5; // proportional gain for derivative of the angle error;
 	};
+
 	Params params;
+
+
+	enum class STATE {
+		UNKNOWN, FREE, OCCUPIED
+	};
+	struct TCell
+	{
+		STATE State;
+		QGraphicsRectItem *item;
+	};
+	TCell cell;
+
+	const int gridScale = 50;
+	const int cellSize=100;
+	const int dimension = 5000;
+	std::array<std::array<TCell, 50>, 50> Grid;
+
 	bool startup_check_flag;
 
 	// read lidar
 	std::vector<Eigen::Vector2f> read_lidar_bpearl();
-
+	void realToIndex(QGraphicsScene *scene);
     //draw lidar
 	AbstractGraphicViewer *viewer;
 	void draw_lidar(auto &filtered_points, QGraphicsScene *scene);

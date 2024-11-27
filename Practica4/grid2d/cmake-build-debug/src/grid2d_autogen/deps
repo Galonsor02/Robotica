@@ -11,6 +11,9 @@ grid2d_autogen/timestamp: \
 	/home/robocomp/robocomp/classes/sigwatch/sigwatch.h \
 	/home/robocomp/robocomp/cmake/modules/qt.cmake \
 	/home/robocomp/robocomp/cmake/robocomp.cmake \
+	/home/usuario/robocomp/components/Grupo3/Practica4/grid2d/cmake-build-debug/src/CommonBehavior.h \
+	/home/usuario/robocomp/components/Grupo3/Practica4/grid2d/cmake-build-debug/src/Grid2D.h \
+	/home/usuario/robocomp/components/Grupo3/Practica4/grid2d/cmake-build-debug/src/Lidar3D.h \
 	/home/usuario/robocomp/components/Grupo3/Practica4/grid2d/cmake-build-debug/src/grid2d_autogen/moc_predefs.h \
 	/home/usuario/robocomp/components/Grupo3/Practica4/grid2d/src/CMakeLists.txt \
 	/home/usuario/robocomp/components/Grupo3/Practica4/grid2d/src/CMakeListsSpecific.txt \

@@ -70,8 +70,6 @@ void SpecificWorker::initialize()
         viewer->setStyleSheet("background-color: lightGray;");
         this->resize(800, 700);
 
-
-
         viewer->show();
 
 		this->setPeriod(STATES::Compute, 100);
@@ -88,7 +86,11 @@ void SpecificWorker::compute()
     //read bpearl (lower) lidar and draw
     auto ldata_bpearl = read_lidar_bpearl();
     if(ldata_bpearl.empty()) { qWarning() << __FUNCTION__ << "Empty bpearl lidar data"; return; };
-    //draw_lidar(ldata.points, &viewer->scene);
+    draw_lidar(ldata_bpearl, &viewer->scene);
+	realToIndex(&viewer->scene);
+
+
+
 
     //draw_lidar(ldata.points, &viewer->scene);
 	//computeCODE
@@ -117,6 +119,7 @@ std::vector<Eigen::Vector2f> SpecificWorker::read_lidar_bpearl()
         auto ldata =  lidar3d_proxy->getLidarData("bpearl", 0, 2*M_PI, 1);
         // filter points according to height and distance
         std::vector<Eigen::Vector2f>  p_filter;
+
         for(const auto &a: ldata.points)
         {
             if(a.z < 500 and a.distance2d > 200)
@@ -128,7 +131,18 @@ std::vector<Eigen::Vector2f> SpecificWorker::read_lidar_bpearl()
     return {};
 }
 
-
+void SpecificWorker::realToIndex(QGraphicsScene *scene)
+{
+	for (int i=0;i<gridScale;i++)
+	{
+		for (int j=0;j<gridScale;j++)
+		{
+			auto x= (dimension/gridScale*i) - dimension;
+			auto y= (dimension/gridScale*j) + dimension;
+			Grid[i][x].item= scene->addRect(x, y, cellSize, cellSize, QPen(Qt::black), QBrush(Qt::NoBrush));
+		}
+	}
+}
 
 /**
  * Draws LIDAR points onto a QGraphicsScene.
