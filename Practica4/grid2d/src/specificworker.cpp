@@ -139,7 +139,7 @@ void SpecificWorker::realToIndex(QGraphicsScene *scene)
 		{
 			auto x= (dimension/gridScale*i) - dimension;
 			auto y= (dimension/gridScale*j) + dimension;
-			Grid[i][x].item= scene->addRect(x, y, cellSize, cellSize, QPen(Qt::black), QBrush(Qt::NoBrush));
+			Grid[i][j].item= scene->addRect(x, y, cellSize, cellSize, QPen(Qt::black), QBrush(Qt::NoBrush));
 		}
 	}
 }
