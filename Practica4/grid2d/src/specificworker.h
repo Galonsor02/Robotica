@@ -83,7 +83,7 @@ private:
 	};
 	struct TCell
 	{
-		STATE State;
+		STATE State = STATE::UNKNOWN;
 		QGraphicsRectItem *item;
 	};
 	TCell cell;
@@ -91,13 +91,16 @@ private:
 	const int gridScale = 50;
 	const int cellSize=100;
 	const int dimension = 5000;
-	std::array<std::array<TCell, 50>, 50> Grid;
+	std::array<std::array<TCell, 50>, 50> grid;
 
 	bool startup_check_flag;
 
 	// read lidar
 	std::vector<Eigen::Vector2f> read_lidar_bpearl();
-	void realToIndex(QGraphicsScene *scene);
+	QPointF index_to_real(float i, float j);
+	QPointF real_to_index(float i, float j);
+	//update grid
+	void update_grid(std::vector<Eigen::Vector2f> bpearl);
     //draw lidar
 	AbstractGraphicViewer *viewer;
 	void draw_lidar(auto &filtered_points, QGraphicsScene *scene);

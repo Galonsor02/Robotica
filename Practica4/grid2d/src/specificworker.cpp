@@ -17,6 +17,7 @@
  *    along with RoboComp.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "specificworker.h"
+#include <cppitertools/enumerate.hpp>
 
 /**
 * \brief Default constructor
@@ -69,8 +70,20 @@ void SpecificWorker::initialize()
         robot_draw = r;
         viewer->setStyleSheet("background-color: lightGray;");
         this->resize(800, 700);
-
         viewer->show();
+
+		// grid
+		QPen pen(QColor("blue"), 20);
+		for (const auto &[i, row] : grid | iter::enumerate)
+		{
+			for (const auto &[j, cell] : row | iter::enumerate)
+			{
+				cell.State = STATE::UNKNOWN;
+				cell.item = viewer->scene.addRect(-cellSize/2, -cellSize/2, cellSize, cellSize, pen);
+				cell.item->setPos(real_to_index(i, j));
+
+			}
+		}
 
 		this->setPeriod(STATES::Compute, 100);
 		//this->setPeriod(STATES::Emergency, 500);
@@ -87,28 +100,9 @@ void SpecificWorker::compute()
     auto ldata_bpearl = read_lidar_bpearl();
     if(ldata_bpearl.empty()) { qWarning() << __FUNCTION__ << "Empty bpearl lidar data"; return; };
     draw_lidar(ldata_bpearl, &viewer->scene);
-	realToIndex(&viewer->scene);
 
-
-
-
-    //draw_lidar(ldata.points, &viewer->scene);
-	//computeCODE
-	//QMutexLocker locker(mutex);
-	//try
-	//{
-	//  camera_proxy->getYImage(0,img, cState, bState);
-    //    if (img.empty())
-    //        emit goToEmergency()
-	//  memcpy(image_gray.data, &img[0], m_width*m_height*sizeof(uchar));
-	//  searchTags(image_gray);
-	//}
-	//catch(const Ice::Exception &e)
-	//{
-	//  std::cout << "Error reading from Camera" << e << std::endl;
-	//}
-	
-	
+	// update grid
+	update_grid(ldata_bpearl);
 }
 
 //READ LIDAR BPEARL AND HELIOS
@@ -131,17 +125,32 @@ std::vector<Eigen::Vector2f> SpecificWorker::read_lidar_bpearl()
     return {};
 }
 
-void SpecificWorker::realToIndex(QGraphicsScene *scene)
+void SpecificWorker::update_grid(std::vector<Eigen::Vector2f> bpearl)
 {
-	for (int i=0;i<gridScale;i++)
+	QPen pen(QColor("red"), 20);
+	for (const auto &a: bpearl)
 	{
-		for (int j=0;j<gridScale;j++)
-		{
-			auto x= (dimension/gridScale*i) - dimension;
-			auto y= (dimension/gridScale*j) + dimension;
-			Grid[i][j].item= scene->addRect(x, y, cellSize, cellSize, QPen(Qt::black), QBrush(Qt::NoBrush));
-		}
+		grid[a.x()][a.y()].item=viewer->scene.addRect(-cellSize/2, -cellSize/2, cellSize, cellSize, pen);
+		grid[a.x()][a.y()].item->setPos(real_to_index(a.x(),a.y()));
 	}
+}
+
+QPointF SpecificWorker::real_to_index(float x, float y)
+{
+	auto i= ((dimension/gridScale)*x) - dimension/2;
+	auto j= ((dimension/gridScale)*y) - dimension/2;
+
+	return QPointF(i, j);
+}
+
+QPointF SpecificWorker::index_to_real(float i, float j)
+{
+	auto x= ((i+((dimension*gridScale)/2))/dimension);
+	auto y= ((j+((dimension*gridScale)/2))/dimension);
+	QPointF result;
+	result.setX(x);
+	result.setY(y);
+	return result;
 }
 
 /**
