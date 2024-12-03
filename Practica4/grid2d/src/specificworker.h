@@ -27,7 +27,7 @@
 #ifndef SPECIFICWORKER_H
 #define SPECIFICWORKER_H
 
-#define HIBERNATION_ENABLED
+// #define HIBERNATION_ENABLED
 
 #include <genericworker.h>
 #include "abstract_graphic_viewer/abstract_graphic_viewer.h"
@@ -88,19 +88,21 @@ private:
 	};
 	TCell cell;
 
-	const int gridScale = 50;
-	const int cellSize=100;
-	const int dimension = 5000;
-	std::array<std::array<TCell, 50>, 50> grid;
+	static constexpr int cellSize=100;
+	static constexpr int dimension = 10000;
+	static constexpr int gridSize = dimension / cellSize;
+	std::array<std::array<TCell, gridSize>, gridSize> grid;
 
 	bool startup_check_flag;
 
 	// read lidar
 	std::vector<Eigen::Vector2f> read_lidar_bpearl();
-	QPointF index_to_real(float i, float j);
-	QPointF real_to_index(float i, float j);
+	QPointF index_to_real(int i, int j);
+	QPoint real_to_index(float i, float j);
 	//update grid
 	void update_grid(std::vector<Eigen::Vector2f> bpearl);
+	//reset grid
+	void reset_grid();
     //draw lidar
 	AbstractGraphicViewer *viewer;
 	void draw_lidar(auto &filtered_points, QGraphicsScene *scene);

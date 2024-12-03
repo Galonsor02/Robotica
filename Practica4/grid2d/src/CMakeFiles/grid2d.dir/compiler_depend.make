@@ -13822,7 +13822,8 @@ src/CMakeFiles/grid2d.dir/specificworker.cpp.o: src/specificworker.cpp \
   /usr/local/include/cppitertools/enumerate.hpp \
   /usr/local/include/cppitertools/internal/iterator_wrapper.hpp \
   /usr/local/include/cppitertools/internal/iterbase.hpp \
-  /usr/local/include/cppitertools/internal/iterbase.hpp
+  /usr/local/include/cppitertools/internal/iterbase.hpp \
+  /usr/local/include/cppitertools/range.hpp
 
 
 /usr/local/include/cppitertools/internal/iterator_wrapper.hpp:
@@ -15694,6 +15695,8 @@ src/Lidar3D.cpp:
 /usr/include/x86_64-linux-gnu/qt6/QtCore/qurlquery.h:
 
 /usr/include/x86_64-linux-gnu/qt6/QtCore/qfilesystemwatcher.h:
+
+/usr/local/include/cppitertools/range.hpp:
 
 /usr/include/x86_64-linux-gnu/qt6/QtCore/qpropertyprivate.h:
 

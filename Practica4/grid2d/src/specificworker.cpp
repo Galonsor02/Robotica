@@ -18,6 +18,7 @@
  */
 #include "specificworker.h"
 #include <cppitertools/enumerate.hpp>
+#include <cppitertools/range.hpp>
 
 /**
 * \brief Default constructor
@@ -80,8 +81,7 @@ void SpecificWorker::initialize()
 			{
 				cell.State = STATE::UNKNOWN;
 				cell.item = viewer->scene.addRect(-cellSize/2, -cellSize/2, cellSize, cellSize, pen);
-				cell.item->setPos(real_to_index(i, j));
-
+				cell.item->setPos(index_to_real(i, j));
 			}
 		}
 
@@ -103,6 +103,7 @@ void SpecificWorker::compute()
 
 	// update grid
 	update_grid(ldata_bpearl);
+	reset_grid();
 }
 
 //READ LIDAR BPEARL AND HELIOS
@@ -125,31 +126,73 @@ std::vector<Eigen::Vector2f> SpecificWorker::read_lidar_bpearl()
     return {};
 }
 
-void SpecificWorker::update_grid(std::vector<Eigen::Vector2f> bpearl)
+void SpecificWorker::update_grid(std::vector<Eigen::Vector2f> lidar_points)
 {
-	QPen pen(QColor("red"), 20);
-	for (const auto &a: bpearl)
+	// Itera sobre los puntos LiDAR
+	for (const auto& point : lidar_points)
 	{
-		grid[a.x()][a.y()].item=viewer->scene.addRect(-cellSize/2, -cellSize/2, cellSize, cellSize, pen);
-		grid[a.x()][a.y()].item->setPos(real_to_index(a.x(),a.y()));
+		// Calcula la distancia al punto LiDAR (módulo del vector) (hipotenusa)
+		float distance = std::sqrt(point.x() * point.x() + point.y() * point.y());
+
+		// Calcula el número de pasos (S) y el delta
+		float Steps = (distance / cellSize);  // S es el número de pasos de 100mm(TAMAÑO DE CELDA)
+
+		// Itera sobre los pasos desde 0 a 1
+		for (const auto &step: iter::range(0.f, 1.f, Steps))
+		{
+			// Convierte las coordenadas a índice de la celda
+			auto q = point * step;
+
+			QPoint cell_index = real_to_index(q.x(), q.y());
+			std::cout <<q.x()<<" "<<q.y()<<" " << cell_index.x() << " " << cell_index.y() << std::endl;
+
+			// Encuentra la celda correspondiente en el grid (redondear a la posición más cercana)
+			auto cell = grid[cell_index.x()][cell_index.y()];
+
+			// Cambia el estado de la celda a blanco (Estado conocido)
+			cell.State = STATE::FREE;
+			cell.item->setBrush(QBrush(QColor("white")));
+		}
+
+		// Marca la última celda en rojo (lo más cercano al punto LiDAR)
+
+		QPoint last_cell_index = real_to_index(point.x(), point.y());
+		std::cout <<point.x() <<" "<<point.y()<<" " << last_cell_index.x() << " " << last_cell_index.y() << std::endl;
+
+		// Encuentra la última celda y marca su estado a rojo (Estado detectado)
+		auto last_cell = grid[last_cell_index.x()][last_cell_index.y()];
+		last_cell.State = STATE::OCCUPIED;
+		last_cell.item->setBrush(QBrush(QColor("red")));
 	}
 }
 
-QPointF SpecificWorker::real_to_index(float x, float y)
+void SpecificWorker::reset_grid()
 {
-	auto i= ((dimension/gridScale)*x) - dimension/2;
-	auto j= ((dimension/gridScale)*y) - dimension/2;
-
-	return QPointF(i, j);
+	for (const auto &[i, row] : grid | iter::enumerate)
+	{
+		for (const auto &[j, cell] : row | iter::enumerate)
+		{
+			cell.State = STATE::UNKNOWN;
+			cell.item->setBrush(QBrush(QColor("lightGray")));
+		}
+	}
 }
 
-QPointF SpecificWorker::index_to_real(float i, float j)
+
+QPointF SpecificWorker::index_to_real(int i, int j)
 {
-	auto x= ((i+((dimension*gridScale)/2))/dimension);
-	auto y= ((j+((dimension*gridScale)/2))/dimension);
-	QPointF result;
-	result.setX(x);
-	result.setY(y);
+	auto x= ((dimension*2/gridScale)*i)-dimension;
+	auto y= -((dimension*2/gridScale)*j)+dimension;
+	return QPointF(x, y);
+}
+
+QPoint SpecificWorker::real_to_index(float x, float y)
+{
+	auto i= ((x + dimension) / ((dimension * 2) / gridScale));
+	auto j= ((y - dimension) / -((dimension * 2) / gridScale));
+	QPoint result(std::clamp(i,0,-1), j);
+	result.setX(i);
+	result.setY(j);
 	return result;
 }
 
