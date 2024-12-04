@@ -17,6 +17,8 @@
  *    along with RoboComp.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "specificworker.h"
+
+#include <queue>
 #include <cppitertools/enumerate.hpp>
 #include <cppitertools/range.hpp>
 
@@ -80,21 +82,21 @@ void SpecificWorker::initialize()
 			for (const auto &[j, cell] : row | iter::enumerate)
 			{
 				cell.State = STATE::UNKNOWN;
-				cell.item = viewer->scene.addRect(-cellSize/2, -cellSize/2, cellSize, cellSize, pen);
+				cell.item = viewer->scene.addRect(-cellSize/2.f, -cellSize/2.f, cellSize, cellSize, pen);
 				cell.item->setPos(index_to_real(i, j));
 			}
 		}
 
+		connect(viewer, SIGNAL(new_mouse_coordinates(QPointF)), this, SLOT(viewerSlot()));
+
 		this->setPeriod(STATES::Compute, 100);
 		//this->setPeriod(STATES::Emergency, 500);
-
 	}
-
 }
 
 void SpecificWorker::compute()
 {
-    std::cout << "Compute worker" << std::endl;
+    reset_grid();
 
     //read bpearl (lower) lidar and draw
     auto ldata_bpearl = read_lidar_bpearl();
@@ -103,7 +105,10 @@ void SpecificWorker::compute()
 
 	// update grid
 	update_grid(ldata_bpearl);
-	reset_grid();
+
+
+
+
 }
 
 //READ LIDAR BPEARL AND HELIOS
@@ -158,43 +163,120 @@ void SpecificWorker::update_grid(std::vector<Eigen::Vector2f> lidar_points)
 
 		QPoint last_cell_index = real_to_index(point.x(), point.y());
 		std::cout <<point.x() <<" "<<point.y()<<" " << last_cell_index.x() << " " << last_cell_index.y() << std::endl;
+		for (int i=last_cell_index.x()-1;i<last_cell_index.x()+1; i++)
+		{
+			for (int j=last_cell_index.y()-1;j<last_cell_index.y()+1; j++)
+			{
+				// Encuentra la última celda y marca su estado a rojo (Estado detectado)
+				auto last_cell = grid[i][j];
+				last_cell.State = STATE::OCCUPIED;
+				last_cell.item->setBrush(QBrush(QColor("red")));
+			}
+		}
 
-		// Encuentra la última celda y marca su estado a rojo (Estado detectado)
-		auto last_cell = grid[last_cell_index.x()][last_cell_index.y()];
-		last_cell.State = STATE::OCCUPIED;
-		last_cell.item->setBrush(QBrush(QColor("red")));
 	}
 }
 
 void SpecificWorker::reset_grid()
 {
 	for (const auto &[i, row] : grid | iter::enumerate)
-	{
 		for (const auto &[j, cell] : row | iter::enumerate)
 		{
 			cell.State = STATE::UNKNOWN;
 			cell.item->setBrush(QBrush(QColor("lightGray")));
 		}
-	}
 }
-
 
 QPointF SpecificWorker::index_to_real(int i, int j)
 {
-	auto x= ((dimension*2/gridScale)*i)-dimension;
-	auto y= -((dimension*2/gridScale)*j)+dimension;
+	const auto x= i*dimension/gridSize-(dimension/2);
+	const auto y= -j*dimension/gridSize + (dimension/2);
 	return QPointF(x, y);
 }
 
 QPoint SpecificWorker::real_to_index(float x, float y)
 {
-	auto i= ((x + dimension) / ((dimension * 2) / gridScale));
-	auto j= ((y - dimension) / -((dimension * 2) / gridScale));
-	QPoint result(std::clamp(i,0,-1), j);
-	result.setX(i);
-	result.setY(j);
-	return result;
+	int i= (((dimension/2)+x)*gridSize)/dimension;
+	int j= -((y-(dimension/2))*gridSize)/dimension;
+	QPoint result(std::clamp(i,0,dimension-1), std::clamp(j,0,dimension-1));
+	return {i, j};
 }
+
+
+bool SpecificWorker::grid_index_valid(const QPoint& index) {
+	return index.x() >= 0 && index.x() < gridSize && index.y() >= 0 && index.y() < gridSize;
+}
+// La función de Dijkstra
+std::vector<QPoint> SpecificWorker::dijkstra(QPoint start, QPoint goal) {
+    // Mapa para almacenar el costo mínimo de cada celda
+    std::unordered_map<QPoint, float, QPointHash> distance_map;
+    // Mapa para almacenar la celda anterior en el camino
+    std::unordered_map<QPoint, QPoint, QPointHash> previous_map;
+
+    // Cola de prioridad para procesar las celdas con menor costo primero
+    std::priority_queue<Cell, std::vector<Cell>, std::greater<Cell>> pq;
+    pq.push({0.0f, start});  // Comenzamos con el punto de inicio con un costo de 0
+    distance_map[start] = 0.0f;
+
+    // Direcciones de los vecinos: arriba, abajo, izquierda, derecha
+    std::vector<QPoint> directions = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+
+    while (!pq.empty()) {
+        Cell current = pq.top();
+        pq.pop();
+
+        // Si llegamos al objetivo, reconstruimos el camino
+        if (current.position == goal) {
+            std::vector<QPoint> path;
+            while (previous_map.find(current.position) != previous_map.end()) {
+                path.push_back(current.position);
+                current.position = previous_map[current.position];
+            }
+            std::reverse(path.begin(), path.end());  // Invertir el camino para que vaya de inicio a objetivo
+            return path;
+        }
+
+        // Explorar los vecinos
+        for (const auto& dir : directions) {
+            QPoint neighbor = current.position + dir;
+
+            // Comprobar si el vecino está dentro de los límites del grid
+            if (grid_index_valid(neighbor)) {
+                // Obtener el costo de la celda vecina (ya sea libre o un obstáculo)
+                float neighbor_cost = grid[neighbor.x()][neighbor.y()].State == STATE::OCCUPIED ? INF : 1.0f;
+
+                // Calcular el costo total de llegar al vecino
+                float new_cost = current.cost + neighbor_cost;
+
+                // Si encontramos un camino más corto al vecino, actualizamos la distancia
+                if (distance_map.find(neighbor) == distance_map.end() || new_cost < distance_map[neighbor]) {
+                    distance_map[neighbor] = new_cost;
+                    previous_map[neighbor] = current.position;
+                    pq.push({new_cost, neighbor});
+                }
+            }
+        }
+    }
+
+    return {};  // Si no encontramos un camino, devolvemos un vector vacío
+}
+
+// Función para encontrar y mostrar el camino en el grid
+void SpecificWorker::find_and_display_path(QPoint start, QPoint goal) {
+	// Obtener el camino más corto usando Dijkstra
+	std::vector<QPoint> path = dijkstra(start, goal);
+
+	// Si hay un camino, lo visualizamos
+	if (!path.empty()) {
+		for (const auto& cell : path) {
+			// Marcar cada celda en el camino (por ejemplo, ponerla de color azul)
+			grid[cell.x()][cell.y()].item->setBrush(QBrush(QColor("blue")));
+		}
+	} else {
+		std::cout << "No path found!" << std::endl;
+	}
+}
+
 
 /**
  * Draws LIDAR points onto a QGraphicsScene.
@@ -229,9 +311,6 @@ void SpecificWorker::draw_lidar(auto &filtered_points, QGraphicsScene *scene)
     }
 }
 
-
-
-
 void SpecificWorker::emergency()
 {
     std::cout << "Emergency worker" << std::endl;
@@ -257,6 +336,10 @@ int SpecificWorker::startup_check()
 	return 0;
 }
 
+void SpecificWorker::viewerSlot(QPointF p)
+{
+
+}
 
 RoboCompGrid2D::Result SpecificWorker::Grid2D_getPaths(RoboCompGrid2D::TPoint source, RoboCompGrid2D::TPoint target)
 {

@@ -7,14 +7,14 @@ set(CMAKE_DEPENDS_GENERATOR "Unix Makefiles")
 # The top level Makefile was generated from the following files:
 set(CMAKE_MAKEFILE_DEPENDS
   "CMakeCache.txt"
-  "/home/galonsor/robocomp/components/Grupo3/Practica4/grid2d/CMakeLists.txt"
+  "/home/robocomp/robocomp/cmake/modules/qt.cmake"
+  "/home/robocomp/robocomp/cmake/robocomp.cmake"
+  "/home/usuario/robocomp/components/Grupo3/Practica4/grid2d/CMakeLists.txt"
   "CMakeFiles/3.30.5/CMakeCCompiler.cmake"
   "CMakeFiles/3.30.5/CMakeCXXCompiler.cmake"
   "CMakeFiles/3.30.5/CMakeSystem.cmake"
-  "/home/galonsor/robocomp/components/Grupo3/Practica4/grid2d/src/CMakeLists.txt"
-  "/home/galonsor/robocomp/components/Grupo3/Practica4/grid2d/src/CMakeListsSpecific.txt"
-  "/home/robocomp/robocomp/cmake/modules/qt.cmake"
-  "/home/robocomp/robocomp/cmake/robocomp.cmake"
+  "/home/usuario/robocomp/components/Grupo3/Practica4/grid2d/src/CMakeLists.txt"
+  "/home/usuario/robocomp/components/Grupo3/Practica4/grid2d/src/CMakeListsSpecific.txt"
   "/snap/clion/305/bin/cmake/linux/x64/share/cmake-3.30/Modules/CMakeCInformation.cmake"
   "/snap/clion/305/bin/cmake/linux/x64/share/cmake-3.30/Modules/CMakeCXXInformation.cmake"
   "/snap/clion/305/bin/cmake/linux/x64/share/cmake-3.30/Modules/CMakeCheckCompilerFlagCommonPatterns.cmake"
@@ -23,6 +23,7 @@ set(CMAKE_MAKEFILE_DEPENDS
   "/snap/clion/305/bin/cmake/linux/x64/share/cmake-3.30/Modules/CMakeGenericSystem.cmake"
   "/snap/clion/305/bin/cmake/linux/x64/share/cmake-3.30/Modules/CMakeInitializeConfigs.cmake"
   "/snap/clion/305/bin/cmake/linux/x64/share/cmake-3.30/Modules/CMakeLanguageInformation.cmake"
+  "/snap/clion/305/bin/cmake/linux/x64/share/cmake-3.30/Modules/CMakeParseArguments.cmake"
   "/snap/clion/305/bin/cmake/linux/x64/share/cmake-3.30/Modules/CMakeSystemSpecificInformation.cmake"
   "/snap/clion/305/bin/cmake/linux/x64/share/cmake-3.30/Modules/CMakeSystemSpecificInitialize.cmake"
   "/snap/clion/305/bin/cmake/linux/x64/share/cmake-3.30/Modules/CheckCSourceCompiles.cmake"
@@ -42,7 +43,6 @@ set(CMAKE_MAKEFILE_DEPENDS
   "/snap/clion/305/bin/cmake/linux/x64/share/cmake-3.30/Modules/FindPkgConfig.cmake"
   "/snap/clion/305/bin/cmake/linux/x64/share/cmake-3.30/Modules/FindThreads.cmake"
   "/snap/clion/305/bin/cmake/linux/x64/share/cmake-3.30/Modules/FindVulkan.cmake"
-  "/snap/clion/305/bin/cmake/linux/x64/share/cmake-3.30/Modules/GNUInstallDirs.cmake"
   "/snap/clion/305/bin/cmake/linux/x64/share/cmake-3.30/Modules/Internal/CheckCompilerFlag.cmake"
   "/snap/clion/305/bin/cmake/linux/x64/share/cmake-3.30/Modules/Internal/CheckFlagCommonConfig.cmake"
   "/snap/clion/305/bin/cmake/linux/x64/share/cmake-3.30/Modules/Internal/CheckSourceCompiles.cmake"
@@ -67,7 +67,6 @@ set(CMAKE_MAKEFILE_DEPENDS
   "/usr/lib/x86_64-linux-gnu/cmake/Qt6/Qt6VersionlessTargets.cmake"
   "/usr/lib/x86_64-linux-gnu/cmake/Qt6/QtFeature.cmake"
   "/usr/lib/x86_64-linux-gnu/cmake/Qt6/QtFeatureCommon.cmake"
-  "/usr/lib/x86_64-linux-gnu/cmake/Qt6/QtPublicAppleHelpers.cmake"
   "/usr/lib/x86_64-linux-gnu/cmake/Qt6/QtPublicCMakeHelpers.cmake"
   "/usr/lib/x86_64-linux-gnu/cmake/Qt6/QtPublicCMakeVersionHelpers.cmake"
   "/usr/lib/x86_64-linux-gnu/cmake/Qt6/QtPublicDependencyHelpers.cmake"
@@ -75,8 +74,6 @@ set(CMAKE_MAKEFILE_DEPENDS
   "/usr/lib/x86_64-linux-gnu/cmake/Qt6/QtPublicFindPackageHelpers.cmake"
   "/usr/lib/x86_64-linux-gnu/cmake/Qt6/QtPublicPluginHelpers.cmake"
   "/usr/lib/x86_64-linux-gnu/cmake/Qt6/QtPublicTargetHelpers.cmake"
-  "/usr/lib/x86_64-linux-gnu/cmake/Qt6/QtPublicTestHelpers.cmake"
-  "/usr/lib/x86_64-linux-gnu/cmake/Qt6/QtPublicToolHelpers.cmake"
   "/usr/lib/x86_64-linux-gnu/cmake/Qt6/QtPublicWalkLibsHelpers.cmake"
   "/usr/lib/x86_64-linux-gnu/cmake/Qt6Core/Qt6CoreAdditionalTargetInfo.cmake"
   "/usr/lib/x86_64-linux-gnu/cmake/Qt6Core/Qt6CoreConfig.cmake"
@@ -182,13 +179,12 @@ set(CMAKE_MAKEFILE_OUTPUTS
 set(CMAKE_MAKEFILE_PRODUCTS
   "CMakeFiles/CMakeDirectoryInformation.cmake"
   "src/CMakeFiles/grid2d_autogen.dir/AutogenInfo.json"
-  ".qt/QtDeploySupport.cmake"
   "src/CMakeFiles/CMakeDirectoryInformation.cmake"
   )
 
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
-  "src/CMakeFiles/ICES__home_galonsor_robocomp_components_Grupo3_Practica4_grid2d_src.dir/DependInfo.cmake"
+  "src/CMakeFiles/ICES__home_usuario_robocomp_components_Grupo3_Practica4_grid2d_src.dir/DependInfo.cmake"
   "src/CMakeFiles/grid2d.dir/DependInfo.cmake"
   "src/CMakeFiles/grid2d_autogen_timestamp_deps.dir/DependInfo.cmake"
   "src/CMakeFiles/grid2d_autogen.dir/DependInfo.cmake"

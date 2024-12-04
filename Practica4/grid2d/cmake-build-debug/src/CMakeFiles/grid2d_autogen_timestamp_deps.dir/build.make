@@ -53,10 +53,10 @@ RM = /snap/clion/305/bin/cmake/linux/x64/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/galonsor/robocomp/components/Grupo3/Practica4/grid2d
+CMAKE_SOURCE_DIR = /home/usuario/robocomp/components/Grupo3/Practica4/grid2d
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/galonsor/robocomp/components/Grupo3/Practica4/grid2d/cmake-build-debug
+CMAKE_BINARY_DIR = /home/usuario/robocomp/components/Grupo3/Practica4/grid2d/cmake-build-debug
 
 # Utility rule file for grid2d_autogen_timestamp_deps.
 
@@ -74,10 +74,10 @@ src/CMakeFiles/grid2d_autogen_timestamp_deps.dir/build: grid2d_autogen_timestamp
 .PHONY : src/CMakeFiles/grid2d_autogen_timestamp_deps.dir/build
 
 src/CMakeFiles/grid2d_autogen_timestamp_deps.dir/clean:
-	cd /home/galonsor/robocomp/components/Grupo3/Practica4/grid2d/cmake-build-debug/src && $(CMAKE_COMMAND) -P CMakeFiles/grid2d_autogen_timestamp_deps.dir/cmake_clean.cmake
+	cd /home/usuario/robocomp/components/Grupo3/Practica4/grid2d/cmake-build-debug/src && $(CMAKE_COMMAND) -P CMakeFiles/grid2d_autogen_timestamp_deps.dir/cmake_clean.cmake
 .PHONY : src/CMakeFiles/grid2d_autogen_timestamp_deps.dir/clean
 
 src/CMakeFiles/grid2d_autogen_timestamp_deps.dir/depend:
-	cd /home/galonsor/robocomp/components/Grupo3/Practica4/grid2d/cmake-build-debug && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/galonsor/robocomp/components/Grupo3/Practica4/grid2d /home/galonsor/robocomp/components/Grupo3/Practica4/grid2d/src /home/galonsor/robocomp/components/Grupo3/Practica4/grid2d/cmake-build-debug /home/galonsor/robocomp/components/Grupo3/Practica4/grid2d/cmake-build-debug/src /home/galonsor/robocomp/components/Grupo3/Practica4/grid2d/cmake-build-debug/src/CMakeFiles/grid2d_autogen_timestamp_deps.dir/DependInfo.cmake "--color=$(COLOR)"
+	cd /home/usuario/robocomp/components/Grupo3/Practica4/grid2d/cmake-build-debug && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/usuario/robocomp/components/Grupo3/Practica4/grid2d /home/usuario/robocomp/components/Grupo3/Practica4/grid2d/src /home/usuario/robocomp/components/Grupo3/Practica4/grid2d/cmake-build-debug /home/usuario/robocomp/components/Grupo3/Practica4/grid2d/cmake-build-debug/src /home/usuario/robocomp/components/Grupo3/Practica4/grid2d/cmake-build-debug/src/CMakeFiles/grid2d_autogen_timestamp_deps.dir/DependInfo.cmake "--color=$(COLOR)"
 .PHONY : src/CMakeFiles/grid2d_autogen_timestamp_deps.dir/depend
 

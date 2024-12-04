@@ -51,6 +51,8 @@ public slots:
 	void emergency();
 	void restore();
 	int startup_check();
+	void viewerSlot(QPointF);
+
 private:
 	struct Params
 	{
@@ -87,11 +89,25 @@ private:
 		QGraphicsRectItem *item;
 	};
 	TCell cell;
+	struct QPointHash {
+		size_t operator()(const QPoint& p) const {
+			return std::hash<int>()(p.x()) ^ std::hash<int>()(p.y());
+		}
+	};
+	// Definir la estructura Cell que usaremos en Dijkstra
+	struct Cell {
+		float cost;  // Costo de la celda (1 para libre, INF para ocupado)
+		QPoint position;  // Posición de la celda en el grid
 
-	static constexpr int cellSize=100;
+		bool operator>(const Cell& other) const {
+			return cost > other.cost;
+		}
+	};
+	static constexpr int cellSize = 100;
 	static constexpr int dimension = 10000;
 	static constexpr int gridSize = dimension / cellSize;
 	std::array<std::array<TCell, gridSize>, gridSize> grid;
+	const float INF = std::numeric_limits<float>::infinity();
 
 	bool startup_check_flag;
 
@@ -103,11 +119,14 @@ private:
 	void update_grid(std::vector<Eigen::Vector2f> bpearl);
 	//reset grid
 	void reset_grid();
+	//camino
+	bool grid_index_valid(const QPoint& index);
+	std::vector<QPoint> dijkstra(QPoint start, QPoint goal);
+	void find_and_display_path(QPoint start, QPoint goal);
     //draw lidar
 	AbstractGraphicViewer *viewer;
 	void draw_lidar(auto &filtered_points, QGraphicsScene *scene);
 	QGraphicsPolygonItem *robot_draw;
-
 };
 
 #endif
