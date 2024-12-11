@@ -19,6 +19,7 @@
 #include "specificworker.h"
 
 #include <queue>
+#include <ranges>
 #include <cppitertools/enumerate.hpp>
 #include <cppitertools/range.hpp>
 
@@ -76,7 +77,7 @@ void SpecificWorker::initialize()
         viewer->show();
 
 		// grid
-		QPen pen(QColor("blue"), 20);
+		QPen pen(QColor("blue"),15);
 		for (const auto &[i, row] : grid | iter::enumerate)
 		{
 			for (const auto &[j, cell] : row | iter::enumerate)
@@ -87,7 +88,7 @@ void SpecificWorker::initialize()
 			}
 		}
 
-		connect(viewer, SIGNAL(new_mouse_coordinates(QPointF)), this, SLOT(viewerSlot()));
+		connect(viewer, SIGNAL(new_mouse_coordinates(QPointF)), this, SLOT(viewerSlot(QPointF)));
 
 		this->setPeriod(STATES::Compute, 100);
 		//this->setPeriod(STATES::Emergency, 500);
@@ -105,9 +106,6 @@ void SpecificWorker::compute()
 
 	// update grid
 	update_grid(ldata_bpearl);
-
-
-
 
 }
 
@@ -149,7 +147,7 @@ void SpecificWorker::update_grid(std::vector<Eigen::Vector2f> lidar_points)
 			auto q = point * step;
 
 			QPoint cell_index = real_to_index(q.x(), q.y());
-			std::cout <<q.x()<<" "<<q.y()<<" " << cell_index.x() << " " << cell_index.y() << std::endl;
+			//std::cout <<q.x()<<" "<<q.y()<<" " << cell_index.x() << " " << cell_index.y() << std::endl;
 
 			// Encuentra la celda correspondiente en el grid (redondear a la posición más cercana)
 			auto cell = grid[cell_index.x()][cell_index.y()];
@@ -162,16 +160,17 @@ void SpecificWorker::update_grid(std::vector<Eigen::Vector2f> lidar_points)
 		// Marca la última celda en rojo (lo más cercano al punto LiDAR)
 
 		QPoint last_cell_index = real_to_index(point.x(), point.y());
-		std::cout <<point.x() <<" "<<point.y()<<" " << last_cell_index.x() << " " << last_cell_index.y() << std::endl;
+		//std::cout <<point.x() <<" "<<point.y()<<" " << last_cell_index.x() << " " << last_cell_index.y() << std::endl;
 		for (int i=last_cell_index.x()-1;i<last_cell_index.x()+1; i++)
 		{
-			for (int j=last_cell_index.y()-1;j<last_cell_index.y()+1; j++)
-			{
-				// Encuentra la última celda y marca su estado a rojo (Estado detectado)
-				auto last_cell = grid[i][j];
-				last_cell.State = STATE::OCCUPIED;
-				last_cell.item->setBrush(QBrush(QColor("red")));
-			}
+			if (i>=0 && i<=gridSize)
+				for (int j=last_cell_index.y()-1;j<last_cell_index.y()+1; j++)
+				{
+					// Encuentra la última celda y marca su estado a rojo (Estado detectado)
+					auto last_cell = grid[i][j];
+					last_cell.State = STATE::OCCUPIED;
+					last_cell.item->setBrush(QBrush(QColor("red")));
+				}
 		}
 
 	}
@@ -183,7 +182,7 @@ void SpecificWorker::reset_grid()
 		for (const auto &[j, cell] : row | iter::enumerate)
 		{
 			cell.State = STATE::UNKNOWN;
-			cell.item->setBrush(QBrush(QColor("lightGray")));
+			cell.item->setBrush(QBrush(QColor("LightGray")));
 		}
 }
 
@@ -207,7 +206,11 @@ bool SpecificWorker::grid_index_valid(const QPoint& index) {
 	return index.x() >= 0 && index.x() < gridSize && index.y() >= 0 && index.y() < gridSize;
 }
 // La función de Dijkstra
-std::vector<QPoint> SpecificWorker::dijkstra(QPoint start, QPoint goal) {
+
+std::vector<QPointF> SpecificWorker::dijkstra(QPointF start_, QPointF goal_)
+{
+	const auto start = real_to_index(start_.x(), start_.y());
+	const auto goal = real_to_index(goal_.x(), goal_.y());
     // Mapa para almacenar el costo mínimo de cada celda
     std::unordered_map<QPoint, float, QPointHash> distance_map;
     // Mapa para almacenar la celda anterior en el camino
@@ -227,13 +230,16 @@ std::vector<QPoint> SpecificWorker::dijkstra(QPoint start, QPoint goal) {
 
         // Si llegamos al objetivo, reconstruimos el camino
         if (current.position == goal) {
-            std::vector<QPoint> path;
-            while (previous_map.find(current.position) != previous_map.end()) {
-                path.push_back(current.position);
-                current.position = previous_map[current.position];
-            }
-            std::reverse(path.begin(), path.end());  // Invertir el camino para que vaya de inicio a objetivo
-            return path;
+        	std::vector<QPoint> path;
+        	while (previous_map.find(current.position) != previous_map.end()) {
+        		path.push_back(current.position);
+        		current.position = previous_map[current.position];
+        	}
+        	std::reverse(path.begin(), path.end());  // Invertir el camino para que vaya de inicio a objetivo
+        	std::vector<QPointF> path_real;
+        	std::ranges::transform(path, std::back_inserter(path_real), [this](const auto& p)
+        			{ return index_to_real(p.x(), p.y()); });
+        	return path_real;
         }
 
         // Explorar los vecinos
@@ -262,18 +268,40 @@ std::vector<QPoint> SpecificWorker::dijkstra(QPoint start, QPoint goal) {
 }
 
 // Función para encontrar y mostrar el camino en el grid
-void SpecificWorker::find_and_display_path(QPoint start, QPoint goal) {
+std::vector<QPointF> SpecificWorker::find_and_display_path(QPointF start, QPointF goal)
+{
 	// Obtener el camino más corto usando Dijkstra
-	std::vector<QPoint> path = dijkstra(start, goal);
+	std::vector<QPointF> path = dijkstra(start, goal);
+	if (not path.empty())
+		{
 
-	// Si hay un camino, lo visualizamos
-	if (!path.empty()) {
-		for (const auto& cell : path) {
-			// Marcar cada celda en el camino (por ejemplo, ponerla de color azul)
-			grid[cell.x()][cell.y()].item->setBrush(QBrush(QColor("blue")));
-		}
-	} else {
-		std::cout << "No path found!" << std::endl;
+	}
+	// // Si hay un camino, lo visualizamos
+	// if (!path.empty()) {
+	// 	for (const auto& cell : path) {
+	// 		// Marcar cada celda en el camino (por ejemplo, ponerla de color azul)
+	// 		grid[cell.x()][cell.y()].item->setBrush(QBrush(QColor("blue")));
+	// 	}
+	// } else {
+	// 	std::cout << "No path found!" << std::endl;
+	// }
+}
+
+void SpecificWorker::draw_path(const std::vector<QPointF> &path, QGraphicsScene *scene)
+{
+	static std::vector<QGraphicsItem*> items;   // store items so they can be shown between iterations
+	// remove all items drawn in the previous iteration
+	for(auto i: items)
+	{ scene->removeItem(i); delete i; }
+	items.clear();
+
+	const auto color = QColor(Qt::darkYellow);
+	const auto brush = QBrush(QColor(Qt::darkYellow));
+	for(const auto &p : path)
+	{
+		auto item = scene->addRect(-50, -50, 100, 100, color, brush);
+		item->setPos(p.x(), p.y());
+		items.push_back(item);
 	}
 }
 
@@ -338,22 +366,51 @@ int SpecificWorker::startup_check()
 
 void SpecificWorker::viewerSlot(QPointF p)
 {
+	qDebug() << "Coordenadas reales clicadas:" << p;
 
+	const QPoint index = real_to_index(p.x(), p.y());
+	int goalX = index.x();
+	int goalY = index.y();
+
+	if (goalX < 0 || goalX >= gridSize || goalY < 0 || goalY >= gridSize)
+	{
+		qDebug() << "El punto está fuera del grid";
+		return;
+	}
+
+	qDebug() << "Índices de cuadrícula objetivo:" << goalX << goalY;
+
+	int startX = gridSize / 2;
+	int startY = gridSize / 2;
+
+	auto path = dijkstra(QPointF(0, 0), p);
+	draw_path(path, &viewer->scene);
 }
 
 RoboCompGrid2D::Result SpecificWorker::Grid2D_getPaths(RoboCompGrid2D::TPoint source, RoboCompGrid2D::TPoint target)
 {
-#ifdef HIBERNATION_ENABLED
-	hibernation = true;
-#endif
-//implementCODE
+	qDebug() << "Coordenadas reales clicadas:" << target.x << target.y;
+	const QPoint index = real_to_index(target.x, target.y);
+	const int goalX = index.x();
+	const int goalY = index.y();
+	if (goalX < 0 || goalX >= gridSize || goalY < 0 || goalY >= gridSize)
+	{
+		qDebug() << "El punto está fuera del grid";
+		return {};
+	}
 
+	qDebug() << "Índices de cuadrícula objetivo:" << goalX << goalY;
+	int startX = gridSize / 2;
+	int startY = gridSize / 2;
+
+	auto path = dijkstra(QPointF(source.x, source.y), QPointF(target.x, target.y));
+	RoboCompGrid2D::Result result;
+	std::ranges::transform(path, std::back_inserter(result.path), [](const auto& p)
+			{ return RoboCompGrid2D::TPoint{p.x(), p.y()}; });
+	result.timestamp = QDateTime::currentMSecsSinceEpoch();
+	result.valid = !path.empty();
+	return result;
 }
-
-
-
-
-
 
 /**************************************/
 // From the RoboCompLidar3D you can call this methods:

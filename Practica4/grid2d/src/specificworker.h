@@ -51,9 +51,13 @@ public slots:
 	void emergency();
 	void restore();
 	int startup_check();
+
+
 	void viewerSlot(QPointF);
 
 private:
+	std::vector<QPointF> path;
+
 	struct Params
 	{
 		float ROBOT_WIDTH = 460;  // mm
@@ -121,12 +125,17 @@ private:
 	void reset_grid();
 	//camino
 	bool grid_index_valid(const QPoint& index);
-	std::vector<QPoint> dijkstra(QPoint start, QPoint goal);
-	void find_and_display_path(QPoint start, QPoint goal);
+
+std::vector<QPointF> dijkstra(QPointF start, QPointF goal);
+
+std::vector<QPointF> find_and_display_path(QPointF start, QPointF goal);
     //draw lidar
 	AbstractGraphicViewer *viewer;
 	void draw_lidar(auto &filtered_points, QGraphicsScene *scene);
 	QGraphicsPolygonItem *robot_draw;
+	//draw path
+	void draw_path(const std::vector<QPointF> &path, QGraphicsScene *scene);
+
 };
 
 #endif
