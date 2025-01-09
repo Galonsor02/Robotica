@@ -1,5 +1,5 @@
-/home/usuario/robocomp/components/Grupo3/Practica3/src/obs_person_tracker_autogen/Y55KOZ7QAZ/moc_qcustomplot.cpp: /home/robocomp/robocomp/classes/qcustomplot/qcustomplot.h \
-  /home/usuario/robocomp/components/Grupo3/Practica3/src/obs_person_tracker_autogen/moc_predefs.h \
+/home/usuario/robocomp/components/Grupo3/Practica4/obs_person_tracker/src/obs_person_tracker_autogen/Y55KOZ7QAZ/moc_qcustomplot.cpp: /home/robocomp/robocomp/classes/qcustomplot/qcustomplot.h \
+  /home/usuario/robocomp/components/Grupo3/Practica4/obs_person_tracker/src/obs_person_tracker_autogen/moc_predefs.h \
   /usr/include/GL/gl.h \
   /usr/include/alloca.h \
   /usr/include/asm-generic/errno-base.h \

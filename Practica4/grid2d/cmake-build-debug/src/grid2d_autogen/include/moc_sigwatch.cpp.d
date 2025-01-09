@@ -1,5 +1,5 @@
-/home/robocomp/robocomp/components/grupo3/Robotica/Practica4/grid2d/cmake-build-debug/src/grid2d_autogen/include/moc_sigwatch.cpp: /home/robocomp/robocomp/classes/sigwatch/sigwatch.h \
-  /home/robocomp/robocomp/components/grupo3/Robotica/Practica4/grid2d/cmake-build-debug/src/grid2d_autogen/moc_predefs.h \
+/home/usuario/robocomp/components/Grupo3/Practica4/grid2d/cmake-build-debug/src/grid2d_autogen/include/moc_sigwatch.cpp: /home/robocomp/robocomp/classes/sigwatch/sigwatch.h \
+  /home/usuario/robocomp/components/Grupo3/Practica4/grid2d/cmake-build-debug/src/grid2d_autogen/moc_predefs.h \
   /usr/include/alloca.h \
   /usr/include/asm-generic/errno-base.h \
   /usr/include/asm-generic/errno.h \

@@ -6,5 +6,5 @@ CXX_DEFINES = -DICE_CPP11_MAPPING -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NO_DEBUG -DQT_
 
 CXX_INCLUDES = -I/home/usuario/robocomp/components/Grupo3/Practica4/grid2d/src/grid2d_autogen/include -I/home/usuario/robocomp/components/Grupo3/Practica4/grid2d/src -I/home/usuario/robocomp/components/Grupo3/Practica4/grid2d/src/. -I/opt/robocomp/include -I/classes -I/home/usuario/robocomp/components/Grupo3/Practica4/grid2d -I/home/robocomp/robocomp/classes -I/home/robocomp/robocomp/libs -I/home/robocomp/robocomp/interfaces -I/include -isystem /usr/include/x86_64-linux-gnu/qt6/QtGui -isystem /usr/include/x86_64-linux-gnu/qt6 -isystem /usr/include/x86_64-linux-gnu/qt6/QtCore -isystem /usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-g++ -isystem /usr/include/x86_64-linux-gnu/qt6/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt6/QtOpenGL -isystem /usr/include/x86_64-linux-gnu/qt6/QtXml -isystem /usr/include/x86_64-linux-gnu/qt6/QtStateMachine
 
-CXX_FLAGS =   -I/usr/include/x86_64-linux-gnu/qt6/QtOpenGLWidgets/ -DBOOST_TT_HAS_OPERATOR_HPP_INCLUDED -Wall -DQT_DLL -DQT_GUI_LIB -DQT_CORE_LIB -fmax-errors=1 -fno-char8_t -fPIC -std=gnu++20
+CXX_FLAGS =   -I/usr/include/x86_64-linux-gnu/qt6/QtOpenGLWidgets/ -DBOOST_TT_HAS_OPERATOR_HPP_INCLUDED -Wall -DQT_DLL -DQT_GUI_LIB -DQT_CORE_LIB -g -fmax-errors=1 -fno-char8_t -fPIC -std=gnu++20
 

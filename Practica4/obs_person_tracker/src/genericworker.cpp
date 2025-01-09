@@ -1,5 +1,5 @@
 /*
- *    Copyright (C) 2024 by YOUR NAME HERE
+ *    Copyright (C) 2025 by YOUR NAME HERE
  *
  *    This file is part of RoboComp
  *
@@ -24,9 +24,8 @@ GenericWorker::GenericWorker(TuplePrx tprx) : Ui_guiDlg()
 {
 
 	
-	lidar3d_proxy = std::get<0>(tprx);
-	lidar3d1_proxy = std::get<1>(tprx);
-	omnirobot_proxy = std::get<2>(tprx);
+	grid2d_proxy = std::get<0>(tprx);
+	omnirobot_proxy = std::get<1>(tprx);
 
 	states.resize(STATES::NumberOfStates);
 	states[STATES::Initialize] = new GRAFCETStep("Initialize", BASIC_PERIOD, nullptr, std::bind(&GenericWorker::initialize, this));

@@ -62,13 +62,18 @@ bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
 void SpecificWorker::initialize()
 {
 	std::cout << "Initialize worker" << std::endl;
+
 	if(this->startup_check_flag)
 	{
+		std::cout << "startup check" << std::endl;
 		this->startup_check();
+
+
 	}
 	else
 	{
         // Viewer
+		std::cout << "viewer" << std::endl;
         viewer = new AbstractGraphicViewer(this->frame, params.GRID_MAX_DIM);
         auto [r, e] = viewer->add_robot(params.ROBOT_WIDTH, params.ROBOT_LENGTH, 0, 100, QColor("Blue"));
         robot_draw = r;
@@ -131,49 +136,67 @@ std::vector<Eigen::Vector2f> SpecificWorker::read_lidar_bpearl()
 
 void SpecificWorker::update_grid(std::vector<Eigen::Vector2f> lidar_points)
 {
-	// Itera sobre los puntos LiDAR
-	for (const auto& point : lidar_points)
-	{
-		// Calcula la distancia al punto LiDAR (módulo del vector) (hipotenusa)
-		float distance = std::sqrt(point.x() * point.x() + point.y() * point.y());
+    // Itera sobre los puntos LiDAR
 
-		// Calcula el número de pasos (S) y el delta
-		float Steps = (distance / cellSize);  // S es el número de pasos de 100mm(TAMAÑO DE CELDA)
+    for (const auto& point : lidar_points)
+    {
+        // Calcula la distancia al punto LiDAR (módulo del vector) (hipotenusa)
+        float distance = std::sqrt(point.x() * point.x() + point.y() * point.y());
 
-		// Itera sobre los pasos desde 0 a 1
-		for (const auto &step: iter::range(0.f, 1.f, Steps))
-		{
-			// Convierte las coordenadas a índice de la celda
-			auto q = point * step;
+        // Calcula el número de pasos (S) y el delta
+        float Steps = (distance / cellSize);  // S es el número de pasos de 100mm(TAMAÑO DE CELDA)
 
-			QPoint cell_index = real_to_index(q.x(), q.y());
-			//std::cout <<q.x()<<" "<<q.y()<<" " << cell_index.x() << " " << cell_index.y() << std::endl;
+        // Asegúrate de que Steps no sea cero (evitar división por cero)
+        if (Steps == 0) {
+            std::cout << "Steps is zero, skipping point." << std::endl;
+            continue; // Si Steps es 0, no procesamos este punto
+        }
 
-			// Encuentra la celda correspondiente en el grid (redondear a la posición más cercana)
-			auto cell = grid[cell_index.x()][cell_index.y()];
+        // Itera sobre los pasos desde 0 a 1
+        for (float step = 0.f; step < 1.f; step += 1.f / Steps) // Ajusta el incremento para que no se pase de 1
+        {
+            // Convierte las coordenadas a índice de la celda
+            auto q = point * step;
 
-			// Cambia el estado de la celda a blanco (Estado conocido)
-			cell.State = STATE::FREE;
-			cell.item->setBrush(QBrush(QColor("white")));
-		}
+            QPoint cell_index = real_to_index(q.x(), q.y());
 
-		// Marca la última celda en rojo (lo más cercano al punto LiDAR)
+            // Verifica si los índices están dentro de los límites del grid
+            if (cell_index.x() < 0 || cell_index.x() >= gridSize || cell_index.y() < 0 || cell_index.y() >= gridSize) {
+                std::cout << "Cell index out of bounds: " << cell_index.x() << ", " << cell_index.y() << std::endl;
+                continue; // Si el índice está fuera de los límites, saltamos este paso
+            }
 
-		QPoint last_cell_index = real_to_index(point.x(), point.y());
-		//std::cout <<point.x() <<" "<<point.y()<<" " << last_cell_index.x() << " " << last_cell_index.y() << std::endl;
-		for (int i=last_cell_index.x()-1;i<last_cell_index.x()+1; i++)
-		{
-			if (i>=0 && i<=gridSize)
-				for (int j=last_cell_index.y()-1;j<last_cell_index.y()+1; j++)
-				{
-					// Encuentra la última celda y marca su estado a rojo (Estado detectado)
-					auto last_cell = grid[i][j];
-					last_cell.State = STATE::OCCUPIED;
-					last_cell.item->setBrush(QBrush(QColor("red")));
-				}
-		}
+            std::cout << q.x() << " " << q.y() << " " << cell_index.x() << " " << cell_index.y() << std::endl;
 
-	}
+            // Encuentra la celda correspondiente en el grid (redondear a la posición más cercana)
+            auto& cell = grid[cell_index.x()][cell_index.y()];
+
+            // Cambia el estado de la celda a blanco (Estado conocido)
+            cell.State = STATE::FREE;
+            cell.item->setBrush(QBrush(QColor("white")));
+        }
+
+        // Marca la última celda en rojo (lo más cercano al punto LiDAR)
+        QPoint last_cell_index = real_to_index(point.x(), point.y());
+        std::cout << point.x() << " " << point.y() << " " << last_cell_index.x() << " " << last_cell_index.y() << std::endl;
+
+        // Verificación de límites antes de acceder a las celdas cercanas
+        for (int i = last_cell_index.x() - 1; i <= last_cell_index.x() + 1; ++i)
+        {
+            if (i < 0 || i >= gridSize) continue; // Asegurarse de no estar fuera del rango
+
+            for (int j = last_cell_index.y() - 2; j <= last_cell_index.y() + 2; ++j)
+            {
+                if (j < 0 || j >= gridSize) continue; // Asegurarse de no estar fuera del rango
+
+                // Encuentra la última celda y marca su estado a rojo (Estado detectado)
+                auto& last_cell = grid[i][j];
+                last_cell.State = STATE::OCCUPIED;
+                last_cell.item->setBrush(QBrush(QColor("red")));
+            }
+        }
+    }
+
 }
 
 void SpecificWorker::reset_grid()
@@ -184,6 +207,7 @@ void SpecificWorker::reset_grid()
 			cell.State = STATE::UNKNOWN;
 			cell.item->setBrush(QBrush(QColor("LightGray")));
 		}
+
 }
 
 QPointF SpecificWorker::index_to_real(int i, int j)
@@ -198,7 +222,7 @@ QPoint SpecificWorker::real_to_index(float x, float y)
 	int i= (((dimension/2)+x)*gridSize)/dimension;
 	int j= -((y-(dimension/2))*gridSize)/dimension;
 	QPoint result(std::clamp(i,0,dimension-1), std::clamp(j,0,dimension-1));
-	return {i, j};
+	return {result.x(), result.y()};
 }
 
 
@@ -267,25 +291,25 @@ std::vector<QPointF> SpecificWorker::dijkstra(QPointF start_, QPointF goal_)
     return {};  // Si no encontramos un camino, devolvemos un vector vacío
 }
 
-// Función para encontrar y mostrar el camino en el grid
-std::vector<QPointF> SpecificWorker::find_and_display_path(QPointF start, QPointF goal)
-{
-	// Obtener el camino más corto usando Dijkstra
-	std::vector<QPointF> path = dijkstra(start, goal);
-	if (not path.empty())
-		{
-
-	}
-	// // Si hay un camino, lo visualizamos
-	// if (!path.empty()) {
-	// 	for (const auto& cell : path) {
-	// 		// Marcar cada celda en el camino (por ejemplo, ponerla de color azul)
-	// 		grid[cell.x()][cell.y()].item->setBrush(QBrush(QColor("blue")));
-	// 	}
-	// } else {
-	// 	std::cout << "No path found!" << std::endl;
-	// }
-}
+// // Función para encontrar y mostrar el camino en el grid
+// std::vector<QPointF> SpecificWorker::find_and_display_path(QPointF start, QPointF goal)
+// {
+// 	// Obtener el camino más corto usando Dijkstra
+// 	std::vector<QPointF> path = dijkstra(start, goal);
+// 	if (not path.empty())
+// 		{
+//
+// 	}
+// 	// // Si hay un camino, lo visualizamos
+// 	// if (!path.empty()) {
+// 	// 	for (const auto& cell : path) {
+// 	// 		// Marcar cada celda en el camino (por ejemplo, ponerla de color azul)
+// 	// 		grid[cell.x()][cell.y()].item->setBrush(QBrush(QColor("blue")));
+// 	// 	}
+// 	// } else {
+// 	// 	std::cout << "No path found!" << std::endl;
+// 	// }
+// }
 
 void SpecificWorker::draw_path(const std::vector<QPointF> &path, QGraphicsScene *scene)
 {
@@ -337,6 +361,7 @@ void SpecificWorker::draw_lidar(auto &filtered_points, QGraphicsScene *scene)
         item->setPos(p.x(), p.y());
         items.push_back(item);
     }
+
 }
 
 void SpecificWorker::emergency()
@@ -382,8 +407,11 @@ void SpecificWorker::viewerSlot(QPointF p)
 
 	int startX = gridSize / 2;
 	int startY = gridSize / 2;
+	std::cout << "before dijkstra" << std::endl;
 
 	auto path = dijkstra(QPointF(0, 0), p);
+	std::cout << "after dijkstra" << std::endl;
+
 	draw_path(path, &viewer->scene);
 }
 

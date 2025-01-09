@@ -1,5 +1,5 @@
-/home/usuario/robocomp/components/Grupo3/Practica3/src/obs_person_tracker_autogen/AF5EVGCUJC/moc_abstract_graphic_viewer.cpp: /home/robocomp/robocomp/classes/abstract_graphic_viewer/abstract_graphic_viewer.h \
-  /home/usuario/robocomp/components/Grupo3/Practica3/src/obs_person_tracker_autogen/moc_predefs.h \
+/home/usuario/robocomp/components/Grupo3/Practica4/obs_person_tracker/src/obs_person_tracker_autogen/AF5EVGCUJC/moc_abstract_graphic_viewer.cpp: /home/robocomp/robocomp/classes/abstract_graphic_viewer/abstract_graphic_viewer.h \
+  /home/usuario/robocomp/components/Grupo3/Practica4/obs_person_tracker/src/obs_person_tracker_autogen/moc_predefs.h \
   /usr/include/alloca.h \
   /usr/include/asm-generic/errno-base.h \
   /usr/include/asm-generic/errno.h \

@@ -7,7 +7,7 @@
 *****************************************************************************/
 
 #include <memory>
-#include "../../../../../../../../robocomp/robocomp/classes/qcustomplot/qcustomplot.h"
+#include "../../../../../../../../../robocomp/robocomp/classes/qcustomplot/qcustomplot.h"
 #include <QtGui/qtextcursor.h>
 #include <QScreen>
 #include <QtCore/qbytearray.h>

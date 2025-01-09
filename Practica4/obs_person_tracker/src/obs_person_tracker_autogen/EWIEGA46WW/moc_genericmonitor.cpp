@@ -7,7 +7,7 @@
 *****************************************************************************/
 
 #include <memory>
-#include "../../genericmonitor.h"
+#include "../../../../../Practica3/src/genericmonitor.h"
 #include <QtGui/qtextcursor.h>
 #include <QScreen>
 #include <QtCore/qbytearray.h>

@@ -1,8 +1,8 @@
 src/CMakeFiles/grid2d.dir/specificmonitor.cpp.o: \
- /home/robocomp/robocomp/components/grupo3/Robotica/Practica4/grid2d/src/specificmonitor.cpp \
+ /home/usuario/robocomp/components/Grupo3/Practica4/grid2d/src/specificmonitor.cpp \
  /usr/include/stdc-predef.h \
- /home/robocomp/robocomp/components/grupo3/Robotica/Practica4/grid2d/src/specificmonitor.h \
- /home/robocomp/robocomp/components/grupo3/Robotica/Practica4/grid2d/src/genericmonitor.h \
+ /home/usuario/robocomp/components/Grupo3/Practica4/grid2d/src/specificmonitor.h \
+ /home/usuario/robocomp/components/Grupo3/Practica4/grid2d/src/genericmonitor.h \
  /usr/include/Ice/Ice.h /usr/include/IceUtil/PushDisableWarnings.h \
  /usr/include/Ice/Config.h /usr/include/IceUtil/Config.h \
  /usr/include/c++/12/stdlib.h /usr/include/c++/12/cstdlib \
@@ -757,10 +757,10 @@ src/CMakeFiles/grid2d.dir/specificmonitor.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qwineventnotifier.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qxmlstream.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qtcoreversion.h \
- /home/robocomp/robocomp/components/grupo3/Robotica/Practica4/grid2d/src/genericworker.h \
- /home/robocomp/robocomp/components/grupo3/Robotica/Practica4/grid2d/src/config.h \
+ /home/usuario/robocomp/components/Grupo3/Practica4/grid2d/src/genericworker.h \
+ /home/usuario/robocomp/components/Grupo3/Practica4/grid2d/src/config.h \
  /home/robocomp/robocomp/classes/qlog/qlog.h \
- /home/robocomp/robocomp/components/grupo3/Robotica/Practica4/grid2d/src/./config.h \
+ /home/usuario/robocomp/components/Grupo3/Practica4/grid2d/src/./config.h \
  /usr/include/x86_64-linux-gnu/qt6/QtGui/QtGui \
  /usr/include/x86_64-linux-gnu/qt6/QtGui/QtGuiDepends \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QtCore \
@@ -949,7 +949,7 @@ src/CMakeFiles/grid2d.dir/specificmonitor.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt6/QtGui/qvectornd.h \
  /usr/include/x86_64-linux-gnu/qt6/QtGui/qwindowdefs.h \
  /usr/include/x86_64-linux-gnu/qt6/QtGui/qtguiversion.h \
- /home/robocomp/robocomp/components/grupo3/Robotica/Practica4/grid2d/cmake-build-debug/src/ui_mainUI.h \
+ /home/usuario/robocomp/components/Grupo3/Practica4/grid2d/cmake-build-debug/src/ui_mainUI.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QVariant \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QApplication \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qapplication.h \
@@ -967,7 +967,7 @@ src/CMakeFiles/grid2d.dir/specificmonitor.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qgridlayout.h \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QWidget \
  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qwidget.h \
- /home/robocomp/robocomp/components/grupo3/Robotica/Practica4/grid2d/cmake-build-debug/src/CommonBehavior.h \
+ /home/usuario/robocomp/components/Grupo3/Practica4/grid2d/cmake-build-debug/src/CommonBehavior.h \
  /home/robocomp/robocomp/classes/grafcetStep/GRAFCETStep.h \
  /usr/include/x86_64-linux-gnu/qt6/QtStateMachine/QState \
  /usr/include/x86_64-linux-gnu/qt6/QtStateMachine/qstate.h \
@@ -981,5 +981,5 @@ src/CMakeFiles/grid2d.dir/specificmonitor.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt6/QtStateMachine/qstate.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QEvent \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QString \
- /home/robocomp/robocomp/components/grupo3/Robotica/Practica4/grid2d/cmake-build-debug/src/Grid2D.h \
- /home/robocomp/robocomp/components/grupo3/Robotica/Practica4/grid2d/cmake-build-debug/src/Lidar3D.h
+ /home/usuario/robocomp/components/Grupo3/Practica4/grid2d/cmake-build-debug/src/Grid2D.h \
+ /home/usuario/robocomp/components/Grupo3/Practica4/grid2d/cmake-build-debug/src/Lidar3D.h
