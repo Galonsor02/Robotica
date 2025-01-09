@@ -181,7 +181,7 @@ void SpecificWorker::update_grid(std::vector<Eigen::Vector2f> lidar_points)
         std::cout << point.x() << " " << point.y() << " " << last_cell_index.x() << " " << last_cell_index.y() << std::endl;
 
         // Verificación de límites antes de acceder a las celdas cercanas
-        for (int i = last_cell_index.x() - 1; i <= last_cell_index.x() + 1; ++i)
+        for (int i = last_cell_index.x() - 2; i <= last_cell_index.x() + 2; ++i)
         {
             if (i < 0 || i >= gridSize) continue; // Asegurarse de no estar fuera del rango
 

@@ -532,31 +532,31 @@
 		[
 			"/home/robocomp/robocomp/classes/abstract_graphic_viewer/abstract_graphic_viewer.h",
 			"MU",
-			"AF5EVGCUJC/moc_abstract_graphic_viewer.cpp",
+			"FGDXZBSX76/moc_abstract_graphic_viewer.cpp",
 			null
 		],
 		[
 			"/home/robocomp/robocomp/classes/grafcetStep/GRAFCETStep.h",
 			"MU",
-			"WJD4WNSKOL/moc_GRAFCETStep.cpp",
+			"YNADVVBD3P/moc_GRAFCETStep.cpp",
 			null
 		],
 		[
 			"/home/robocomp/robocomp/classes/qlog/qlog.h",
 			"MU",
-			"REUAXSVL7F/moc_qlog.cpp",
+			"I3TCFKXIFP/moc_qlog.cpp",
 			null
 		],
 		[
 			"/home/robocomp/robocomp/classes/rapplication/rapplication.h",
 			"MU",
-			"2NKKL3WBBN/moc_rapplication.cpp",
+			"FX6O2DM4MC/moc_rapplication.cpp",
 			null
 		],
 		[
 			"/home/robocomp/robocomp/classes/sigwatch/sigwatch.h",
 			"MU",
-			"N4WA3CPOWS/moc_sigwatch.cpp",
+			"6HSEAYRORY/moc_sigwatch.cpp",
 			null
 		],
 		[
@@ -665,7 +665,7 @@
 		"/home/usuario/robocomp/components/Grupo3/Practica4/grid2d/src/ui_mainUI.h"
 	],
 	"MULTI_CONFIG" : false,
-	"PARALLEL" : 8,
+	"PARALLEL" : 16,
 	"PARSE_CACHE_FILE" : "/home/usuario/robocomp/components/Grupo3/Practica4/grid2d/src/CMakeFiles/grid2d_autogen.dir/ParseCache.txt",
 	"QT_MOC_EXECUTABLE" : "/usr/lib/qt6/libexec/moc",
 	"QT_UIC_EXECUTABLE" : "/usr/lib/qt6/libexec/uic",

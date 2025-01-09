@@ -67,22 +67,22 @@ include src/CMakeFiles/ICES__home_usuario_robocomp_components_Grupo3_Practica3_s
 include src/CMakeFiles/ICES__home_usuario_robocomp_components_Grupo3_Practica3_src.dir/progress.make
 
 ICES__home_usuario_robocomp_components_Grupo3_Practica3_src: src/CMakeFiles/ICES__home_usuario_robocomp_components_Grupo3_Practica3_src.dir/build.make
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold "BU robocompdsl /home/robocomp/robocomp/interfaces/IDSLs/CommonBehavior.idsl /home/usuario/robocomp/components/Grupo3/Practica3/src/CommonBehavior.ice"
-	cd /home/usuario/robocomp/components/Grupo3/Practica4/obs_person_tracker/src && robocompdsl /home/robocomp/robocomp/interfaces/IDSLs/CommonBehavior.idsl /home/usuario/robocomp/components/Grupo3/Practica3/src/CommonBehavior.ice
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold "BU robocompdsl /home/robocomp/robocomp/interfaces/IDSLs/Camera360RGB.idsl /home/usuario/robocomp/components/Grupo3/Practica3/src/Camera360RGB.ice"
-	cd /home/usuario/robocomp/components/Grupo3/Practica4/obs_person_tracker/src && robocompdsl /home/robocomp/robocomp/interfaces/IDSLs/Camera360RGB.idsl /home/usuario/robocomp/components/Grupo3/Practica3/src/Camera360RGB.ice
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold "BU robocompdsl /home/robocomp/robocomp/interfaces/IDSLs/GenericBase.idsl /home/usuario/robocomp/components/Grupo3/Practica3/src/GenericBase.ice"
-	cd /home/usuario/robocomp/components/Grupo3/Practica4/obs_person_tracker/src && robocompdsl /home/robocomp/robocomp/interfaces/IDSLs/GenericBase.idsl /home/usuario/robocomp/components/Grupo3/Practica3/src/GenericBase.ice
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold "BU robocompdsl /home/robocomp/robocomp/interfaces/IDSLs/Lidar3D.idsl /home/usuario/robocomp/components/Grupo3/Practica3/src/Lidar3D.ice"
-	cd /home/usuario/robocomp/components/Grupo3/Practica4/obs_person_tracker/src && robocompdsl /home/robocomp/robocomp/interfaces/IDSLs/Lidar3D.idsl /home/usuario/robocomp/components/Grupo3/Practica3/src/Lidar3D.ice
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold "BU robocompdsl /home/robocomp/robocomp/interfaces/IDSLs/Lidar3D.idsl /home/usuario/robocomp/components/Grupo3/Practica3/src/Lidar3D.ice"
-	cd /home/usuario/robocomp/components/Grupo3/Practica4/obs_person_tracker/src && robocompdsl /home/robocomp/robocomp/interfaces/IDSLs/Lidar3D.idsl /home/usuario/robocomp/components/Grupo3/Practica3/src/Lidar3D.ice
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold "BU robocompdsl /home/robocomp/robocomp/interfaces/IDSLs/Lidar3D.idsl /home/usuario/robocomp/components/Grupo3/Practica3/src/Lidar3D.ice"
-	cd /home/usuario/robocomp/components/Grupo3/Practica4/obs_person_tracker/src && robocompdsl /home/robocomp/robocomp/interfaces/IDSLs/Lidar3D.idsl /home/usuario/robocomp/components/Grupo3/Practica3/src/Lidar3D.ice
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold "BU robocompdsl /home/robocomp/robocomp/interfaces/IDSLs/OmniRobot.idsl /home/usuario/robocomp/components/Grupo3/Practica3/src/OmniRobot.ice"
-	cd /home/usuario/robocomp/components/Grupo3/Practica4/obs_person_tracker/src && robocompdsl /home/robocomp/robocomp/interfaces/IDSLs/OmniRobot.idsl /home/usuario/robocomp/components/Grupo3/Practica3/src/OmniRobot.ice
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold "BU robocompdsl /home/robocomp/robocomp/interfaces/IDSLs/VisualElementsPub.idsl /home/usuario/robocomp/components/Grupo3/Practica3/src/VisualElementsPub.ice"
-	cd /home/usuario/robocomp/components/Grupo3/Practica4/obs_person_tracker/src && robocompdsl /home/robocomp/robocomp/interfaces/IDSLs/VisualElementsPub.idsl /home/usuario/robocomp/components/Grupo3/Practica3/src/VisualElementsPub.ice
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold "BU robocompdsl /home/robocomp/robocomp//interfaces/IDSLs/CommonBehavior.idsl /home/usuario/robocomp/components/Grupo3/Practica3/src/CommonBehavior.ice"
+	cd /home/usuario/robocomp/components/Grupo3/Practica4/obs_person_tracker/src && robocompdsl /home/robocomp/robocomp//interfaces/IDSLs/CommonBehavior.idsl /home/usuario/robocomp/components/Grupo3/Practica3/src/CommonBehavior.ice
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold "BU robocompdsl /home/robocomp/robocomp//interfaces/IDSLs/Camera360RGB.idsl /home/usuario/robocomp/components/Grupo3/Practica3/src/Camera360RGB.ice"
+	cd /home/usuario/robocomp/components/Grupo3/Practica4/obs_person_tracker/src && robocompdsl /home/robocomp/robocomp//interfaces/IDSLs/Camera360RGB.idsl /home/usuario/robocomp/components/Grupo3/Practica3/src/Camera360RGB.ice
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold "BU robocompdsl /home/robocomp/robocomp//interfaces/IDSLs/GenericBase.idsl /home/usuario/robocomp/components/Grupo3/Practica3/src/GenericBase.ice"
+	cd /home/usuario/robocomp/components/Grupo3/Practica4/obs_person_tracker/src && robocompdsl /home/robocomp/robocomp//interfaces/IDSLs/GenericBase.idsl /home/usuario/robocomp/components/Grupo3/Practica3/src/GenericBase.ice
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold "BU robocompdsl /home/robocomp/robocomp//interfaces/IDSLs/Lidar3D.idsl /home/usuario/robocomp/components/Grupo3/Practica3/src/Lidar3D.ice"
+	cd /home/usuario/robocomp/components/Grupo3/Practica4/obs_person_tracker/src && robocompdsl /home/robocomp/robocomp//interfaces/IDSLs/Lidar3D.idsl /home/usuario/robocomp/components/Grupo3/Practica3/src/Lidar3D.ice
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold "BU robocompdsl /home/robocomp/robocomp//interfaces/IDSLs/Lidar3D.idsl /home/usuario/robocomp/components/Grupo3/Practica3/src/Lidar3D.ice"
+	cd /home/usuario/robocomp/components/Grupo3/Practica4/obs_person_tracker/src && robocompdsl /home/robocomp/robocomp//interfaces/IDSLs/Lidar3D.idsl /home/usuario/robocomp/components/Grupo3/Practica3/src/Lidar3D.ice
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold "BU robocompdsl /home/robocomp/robocomp//interfaces/IDSLs/Lidar3D.idsl /home/usuario/robocomp/components/Grupo3/Practica3/src/Lidar3D.ice"
+	cd /home/usuario/robocomp/components/Grupo3/Practica4/obs_person_tracker/src && robocompdsl /home/robocomp/robocomp//interfaces/IDSLs/Lidar3D.idsl /home/usuario/robocomp/components/Grupo3/Practica3/src/Lidar3D.ice
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold "BU robocompdsl /home/robocomp/robocomp//interfaces/IDSLs/OmniRobot.idsl /home/usuario/robocomp/components/Grupo3/Practica3/src/OmniRobot.ice"
+	cd /home/usuario/robocomp/components/Grupo3/Practica4/obs_person_tracker/src && robocompdsl /home/robocomp/robocomp//interfaces/IDSLs/OmniRobot.idsl /home/usuario/robocomp/components/Grupo3/Practica3/src/OmniRobot.ice
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold "BU robocompdsl /home/robocomp/robocomp//interfaces/IDSLs/VisualElementsPub.idsl /home/usuario/robocomp/components/Grupo3/Practica3/src/VisualElementsPub.ice"
+	cd /home/usuario/robocomp/components/Grupo3/Practica4/obs_person_tracker/src && robocompdsl /home/robocomp/robocomp//interfaces/IDSLs/VisualElementsPub.idsl /home/usuario/robocomp/components/Grupo3/Practica3/src/VisualElementsPub.ice
 .PHONY : ICES__home_usuario_robocomp_components_Grupo3_Practica3_src
 
 # Rule to build all files generated by this target.

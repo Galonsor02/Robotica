@@ -43,14 +43,18 @@ bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
 }
 void SpecificWorker::initialize()
 {
-    std::cout << "Initialize worker" << std::endl;
+   // std::cout << "Initialize worker" << std::endl;
     if(this->startup_check_flag)
     {
+        std::cout << "check flag" << std::endl;
+
         this->startup_check();
     }
     else
     {
         // Viewer
+        std::cout << "viewer" << std::endl;
+
         viewer = new AbstractGraphicViewer(this->frame, params.GRID_MAX_DIM);
         auto [r, e] = viewer->add_robot(params.ROBOT_WIDTH, params.ROBOT_LENGTH, 0, 100, QColor("Blue"));
         robot_draw = r;
@@ -79,6 +83,7 @@ void SpecificWorker::initialize()
             pushButton_stop->setText(pushButton_stop->isChecked() ? "Track" : "Stop");
         });
         viewer->show();
+        std::cout << "late viewer" << std::endl;
 
         this->setPeriod(STATES::Compute, 100);
     }
@@ -86,6 +91,8 @@ void SpecificWorker::initialize()
 void SpecificWorker::compute()
 {
     /// Check if there is new YOLO data in buffer
+    std::cout << "compute worker" << std::endl;
+
     std::expected<RoboCompVisualElementsPub::TObject, std::string> tp_person = std::unexpected("No person found");
     auto [data_] = buffer.read_first();
     if(data_.has_value())
@@ -95,6 +102,8 @@ void SpecificWorker::compute()
     std::vector<Eigen::Vector2f> path;
     if(tp_person.has_value())
     {
+        std::cout << "has value" << std::endl;
+
         float x = std::stof(tp_person.value().attributes.at("x_pos"));
         float y = std::stof(tp_person.value().attributes.at("y_pos"));
 
@@ -150,7 +159,7 @@ std::expected<RoboCompVisualElementsPub::TObject, std::string> SpecificWorker::f
 //////////////////////////////////////////////////////////////////
 /// STATE MACHINE
 //////////////////////////////////////////////////////////////////
-SpecificWorker::RobotSpeed SpecificWorker::state_machine(const Tpath &path)
+SpecificWorker::RobotSpeed SpecificWorker::state_machine(const TPath &path)
 {
     RetVal res;
     if(pushButton_stop->isChecked())    // Stop if button is pressed
@@ -180,7 +189,7 @@ SpecificWorker::RobotSpeed SpecificWorker::state_machine(const Tpath &path)
     return {speed, rot};
 }
 
-SpecificWorker::RetVal SpecificWorker::track(const Tpath &path)
+SpecificWorker::RetVal SpecificWorker::track(const TPath &path)
 {
     static float ant_angle_error = 0.0;
     //qDebug() << __FUNCTION__;
@@ -221,7 +230,7 @@ SpecificWorker::RetVal SpecificWorker::track(const Tpath &path)
     return RetVal(STATE::TRACK, params.MAX_ADV_SPEED * rot_brake * adv_brake, rot_speed);
 }
 
-SpecificWorker::RetVal SpecificWorker::wait(const Tpath &path)
+SpecificWorker::RetVal SpecificWorker::wait(const TPath &path)
 {
     if(path.empty())
         return RetVal(STATE::TRACK, 0.f, 0.f);
@@ -232,7 +241,7 @@ SpecificWorker::RetVal SpecificWorker::wait(const Tpath &path)
     return RetVal(STATE::WAIT, 0.f, 0.f);
 }
 
-SpecificWorker::RetVal SpecificWorker::search(const Tpath &path)
+SpecificWorker::RetVal SpecificWorker::search(const TPath &path)
 {
     if(not path.empty())
         return RetVal(STATE::TRACK, 0.f, 0.f);
@@ -247,3 +256,111 @@ SpecificWorker::RetVal SpecificWorker::stop()
 
     return RetVal(STATE::STOP, 0.f, 0.f);
 }
+
+
+
+void SpecificWorker::plot_distance(double distance)
+{
+    // add value to plot
+    static int key = 0;
+    plot->graph(0)->addData(key++, distance);
+    // Remove data points if there are more than X
+    if (plot->graph(0)->dataCount() > params.MAX_DIST_POINTS_TO_SHOW)
+        plot->graph(0)->data()->removeBefore(key - params.MAX_DIST_POINTS_TO_SHOW);
+    // plot
+    plot->rescaleAxes();  plot->replot();
+}
+float SpecificWorker::running_average(float dist)
+{
+    static float avg = 0;
+    static int count = 0;
+    avg = (avg * count + dist) / (count + 1);
+    count++;
+    return avg;
+}
+
+//////////////////////////////////////////////////////////////////
+/// SUBSCRIPTIONS (runs in a different thread)
+//////////////////////////////////////////////////////////////////
+//SUBSCRIPTION to setVisualObjects method from VisualElementsPub interface. This is called in a different thread.
+void SpecificWorker::VisualElementsPub_setVisualObjects(RoboCompVisualElementsPub::TData data)
+{
+    // std::cout << "VisualElements_setVisualObjects" << std::endl;
+    //    for(auto object : data.objects)
+    //        std::cout << "Object type: " << object.id << std::endl;
+    //    qDebug() << "Size: " << data.objects.size();
+    auto timestamp = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+    buffer.put<0>(std::move(data), timestamp); // inserts the laser data value to the queue 0.
+}
+//////////////////////////////////////////////////////////////////
+/// AUXILIARY FUNCTIONS
+//////////////////////////////////////////////////////////////////
+void SpecificWorker::emergency()
+{
+    std::cout << "Emergency worker" << std::endl;
+	//computeCODE
+	//
+	//if (SUCCESSFUL)
+    //  emmit goToRestore()
+}
+//Execute one when exiting to emergencyState
+void SpecificWorker::restore()
+{
+    std::cout << "Restore worker" << std::endl;
+	//computeCODE
+	//Restore emergency component
+
+}
+int SpecificWorker::startup_check()
+{
+	std::cout << "Startup check" << std::endl;
+	QTimer::singleShot(200, qApp, SLOT(quit()));
+	return 0;
+}
+
+
+
+/**************************************/
+// From the RoboCompLidar3D you can call this methods:
+// this->lidar3d_proxy->getLidarData(...)
+// this->lidar3d_proxy->getLidarDataArrayProyectedInImage(...)
+// this->lidar3d_proxy->getLidarDataProyectedInImage(...)
+// this->lidar3d_proxy->getLidarDataWithThreshold2d(...)
+
+/**************************************/
+// From the RoboCompLidar3D you can use this types:
+// RoboCompLidar3D::TPoint
+// RoboCompLidar3D::TDataImage
+// RoboCompLidar3D::TData
+
+/**************************************/
+// From the RoboCompOmniRobot you can call this methods:
+// this->omnirobot_proxy->correctOdometer(...)
+// this->omnirobot_proxy->getBasePose(...)
+// this->omnirobot_proxy->getBaseState(...)
+// this->omnirobot_proxy->resetOdometer(...)
+// this->omnirobot_proxy->setOdometer(...)
+// this->omnirobot_proxy->setOdometerPose(...)
+// this->omnirobot_proxy->setSpeedBase(...)
+// this->omnirobot_proxy->stopBase(...)
+
+/**************************************/
+// From the RoboCompOmniRobot you can use this types:
+// RoboCompOmniRobot::TMechParams
+
+/**************************************/
+// From the RoboCompVisualElements you can call this methods:
+// this->visualelements_proxy->getVisualObjects(...)
+// this->visualelements_proxy->setVisualObjects(...)
+
+/**************************************/
+// From the RoboCompVisualElements you can use this types:
+// RoboCompVisualElements::TRoi
+// RoboCompVisualElements::TObject
+// RoboCompVisualElements::TObjects
+
+// Instantiate the random number generator and distribution
+//    static std::mt19937 gen(rd());
+//    static std::uniform_int_distribution<int> dist(0, 1);
+//    static bool first_time = true;
+//    static int sign = 1;

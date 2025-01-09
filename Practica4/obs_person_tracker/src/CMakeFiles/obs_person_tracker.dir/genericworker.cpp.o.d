@@ -1,8 +1,8 @@
 src/CMakeFiles/obs_person_tracker.dir/genericworker.cpp.o: \
- /home/usuario/robocomp/components/Grupo3/Practica3/src/genericworker.cpp \
+ /home/usuario/robocomp/components/Grupo3/Practica4/obs_person_tracker/src/genericworker.cpp \
  /usr/include/stdc-predef.h \
- /home/usuario/robocomp/components/Grupo3/Practica3/src/genericworker.h \
- /home/usuario/robocomp/components/Grupo3/Practica3/src/config.h \
+ /home/usuario/robocomp/components/Grupo3/Practica4/obs_person_tracker/src/genericworker.h \
+ /home/usuario/robocomp/components/Grupo3/Practica4/obs_person_tracker/src/config.h \
  /usr/lib/gcc/x86_64-linux-gnu/12/include/stdint.h /usr/include/stdint.h \
  /usr/include/x86_64-linux-gnu/bits/libc-header-start.h \
  /usr/include/features.h /usr/include/features-time64.h \
@@ -970,6 +970,7 @@ src/CMakeFiles/obs_person_tracker.dir/genericworker.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QString \
  /home/usuario/robocomp/components/Grupo3/Practica4/obs_person_tracker/src/Camera360RGB.h \
  /home/usuario/robocomp/components/Grupo3/Practica4/obs_person_tracker/src/GenericBase.h \
+ /home/usuario/robocomp/components/Grupo3/Practica4/obs_person_tracker/src/Grid2D.h \
  /home/usuario/robocomp/components/Grupo3/Practica4/obs_person_tracker/src/Lidar3D.h \
  /home/usuario/robocomp/components/Grupo3/Practica4/obs_person_tracker/src/OmniRobot.h \
  /home/usuario/robocomp/components/Grupo3/Practica4/obs_person_tracker/src/VisualElementsPub.h

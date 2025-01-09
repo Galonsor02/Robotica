@@ -1,7 +1,7 @@
 src/CMakeFiles/obs_person_tracker.dir/genericmonitor.cpp.o: \
- /home/usuario/robocomp/components/Grupo3/Practica3/src/genericmonitor.cpp \
+ /home/usuario/robocomp/components/Grupo3/Practica4/obs_person_tracker/src/genericmonitor.cpp \
  /usr/include/stdc-predef.h \
- /home/usuario/robocomp/components/Grupo3/Practica3/src/genericmonitor.h \
+ /home/usuario/robocomp/components/Grupo3/Practica4/obs_person_tracker/src/genericmonitor.h \
  /usr/include/Ice/Ice.h /usr/include/IceUtil/PushDisableWarnings.h \
  /usr/include/Ice/Config.h /usr/include/IceUtil/Config.h \
  /usr/include/c++/12/stdlib.h /usr/include/c++/12/cstdlib \
@@ -757,8 +757,8 @@ src/CMakeFiles/obs_person_tracker.dir/genericmonitor.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qwineventnotifier.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qxmlstream.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/qtcoreversion.h \
- /home/usuario/robocomp/components/Grupo3/Practica3/src/genericworker.h \
- /home/usuario/robocomp/components/Grupo3/Practica3/src/config.h \
+ /home/usuario/robocomp/components/Grupo3/Practica4/obs_person_tracker/src/genericworker.h \
+ /home/usuario/robocomp/components/Grupo3/Practica4/obs_person_tracker/src/config.h \
  /home/robocomp/robocomp/classes/qlog/qlog.h \
  /home/usuario/robocomp/components/Grupo3/Practica4/obs_person_tracker/src/config.h \
  /usr/include/x86_64-linux-gnu/qt6/QtGui/QtGui \
@@ -997,6 +997,7 @@ src/CMakeFiles/obs_person_tracker.dir/genericmonitor.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QString \
  /home/usuario/robocomp/components/Grupo3/Practica4/obs_person_tracker/src/Camera360RGB.h \
  /home/usuario/robocomp/components/Grupo3/Practica4/obs_person_tracker/src/GenericBase.h \
+ /home/usuario/robocomp/components/Grupo3/Practica4/obs_person_tracker/src/Grid2D.h \
  /home/usuario/robocomp/components/Grupo3/Practica4/obs_person_tracker/src/Lidar3D.h \
  /home/usuario/robocomp/components/Grupo3/Practica4/obs_person_tracker/src/OmniRobot.h \
  /home/usuario/robocomp/components/Grupo3/Practica4/obs_person_tracker/src/VisualElementsPub.h

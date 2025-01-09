@@ -1,7 +1,7 @@
 src/CMakeFiles/obs_person_tracker.dir/commonbehaviorI.cpp.o: \
- /home/usuario/robocomp/components/Grupo3/Practica3/src/commonbehaviorI.cpp \
+ /home/usuario/robocomp/components/Grupo3/Practica4/obs_person_tracker/src/commonbehaviorI.cpp \
  /usr/include/stdc-predef.h \
- /home/usuario/robocomp/components/Grupo3/Practica3/src/commonbehaviorI.h \
+ /home/usuario/robocomp/components/Grupo3/Practica4/obs_person_tracker/src/commonbehaviorI.h \
  /usr/include/Ice/Ice.h /usr/include/IceUtil/PushDisableWarnings.h \
  /usr/include/Ice/Config.h /usr/include/IceUtil/Config.h \
  /usr/include/c++/12/stdlib.h /usr/include/c++/12/cstdlib \
@@ -308,8 +308,8 @@ src/CMakeFiles/obs_person_tracker.dir/commonbehaviorI.cpp.o: \
  /usr/include/IceUtil/UUID.h \
  /home/usuario/robocomp/components/Grupo3/Practica4/obs_person_tracker/src/CommonBehavior.h \
  /home/usuario/robocomp/components/Grupo3/Practica4/obs_person_tracker/src/config.h \
- /home/usuario/robocomp/components/Grupo3/Practica3/src/genericworker.h \
- /home/usuario/robocomp/components/Grupo3/Practica3/src/config.h \
+ /home/usuario/robocomp/components/Grupo3/Practica4/obs_person_tracker/src/genericworker.h \
+ /home/usuario/robocomp/components/Grupo3/Practica4/obs_person_tracker/src/config.h \
  /home/robocomp/robocomp/classes/qlog/qlog.h \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QtCore \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QtCoreDepends \
@@ -997,7 +997,8 @@ src/CMakeFiles/obs_person_tracker.dir/commonbehaviorI.cpp.o: \
  /usr/include/x86_64-linux-gnu/qt6/QtCore/QString \
  /home/usuario/robocomp/components/Grupo3/Practica4/obs_person_tracker/src/Camera360RGB.h \
  /home/usuario/robocomp/components/Grupo3/Practica4/obs_person_tracker/src/GenericBase.h \
+ /home/usuario/robocomp/components/Grupo3/Practica4/obs_person_tracker/src/Grid2D.h \
  /home/usuario/robocomp/components/Grupo3/Practica4/obs_person_tracker/src/Lidar3D.h \
  /home/usuario/robocomp/components/Grupo3/Practica4/obs_person_tracker/src/OmniRobot.h \
  /home/usuario/robocomp/components/Grupo3/Practica4/obs_person_tracker/src/VisualElementsPub.h \
- /home/usuario/robocomp/components/Grupo3/Practica3/src/genericmonitor.h
+ /home/usuario/robocomp/components/Grupo3/Practica4/obs_person_tracker/src/genericmonitor.h
