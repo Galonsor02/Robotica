@@ -68,7 +68,7 @@ include src/CMakeFiles/obs_person_tracker_autogen.dir/progress.make
 
 src/CMakeFiles/obs_person_tracker_autogen:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/usuario/robocomp/components/Grupo3/Practica4/obs_person_tracker/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Automatic MOC and UIC for target obs_person_tracker"
-	cd /home/usuario/robocomp/components/Grupo3/Practica4/obs_person_tracker/src && /usr/bin/cmake -E cmake_autogen /home/usuario/robocomp/components/Grupo3/Practica4/obs_person_tracker/src/CMakeFiles/obs_person_tracker_autogen.dir/AutogenInfo.json Debug
+	cd /home/usuario/robocomp/components/Grupo3/Practica4/obs_person_tracker/src && /usr/bin/cmake -E cmake_autogen /home/usuario/robocomp/components/Grupo3/Practica4/obs_person_tracker/src/CMakeFiles/obs_person_tracker_autogen.dir/AutogenInfo.json ""
 
 obs_person_tracker_autogen: src/CMakeFiles/obs_person_tracker_autogen
 obs_person_tracker_autogen: src/CMakeFiles/obs_person_tracker_autogen.dir/build.make
