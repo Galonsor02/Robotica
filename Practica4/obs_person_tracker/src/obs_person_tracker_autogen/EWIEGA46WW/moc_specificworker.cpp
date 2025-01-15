@@ -7,7 +7,7 @@
 *****************************************************************************/
 
 #include <memory>
-#include "../../specificworker.h"
+#include "../../../../../Practica3/src/specificworker.h"
 #include <QtGui/qtextcursor.h>
 #include <QScreen>
 #include <QtCore/qbytearray.h>
