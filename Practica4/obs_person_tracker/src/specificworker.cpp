@@ -113,6 +113,7 @@ void SpecificWorker::compute()
             path.clear(); // Ensure the vector is empty before filling it
             for (const auto &p : res.path)
                 path.emplace_back(p.x, p.y); // Convert RoboCompGrid2D::TPoint to Eigen::Vector2f
+            draw_path(res.path);
         }
         catch (const Ice::Exception &e) { qDebug() << "Error calling Grid2D_getPaths:" << e.what(); }
     }
@@ -120,7 +121,10 @@ void SpecificWorker::compute()
     if (path.empty())
     {
         qWarning() << "Empty path. Changing to SEARCH state.";
-        state_machine(path); // Call the state machine with an empty path
+        state = STATE::SEARCH;
+        const auto &[adv,rot]=state_machine(path); // Call the state machine with an empty path
+        try{ omnirobot_proxy->setSpeedBase(0.f, adv, rot); }
+        catch(const Ice::Exception &e){std::cout << e << std::endl;}
         return;
     }
     else
@@ -156,6 +160,33 @@ std::expected<RoboCompVisualElementsPub::TObject, std::string> SpecificWorker::f
         return *p_;
 }
 
+void SpecificWorker::draw_path(const std::vector<RoboCompGrid2D::TPoint> &path)
+{
+    // Limpiar elementos gráficos de la ruta anterior
+    for (auto item : path_items)
+    {
+        viewer->scene.removeItem(item);
+        delete item;
+    }
+    path_items.clear();
+
+    if (path.empty())
+    {
+        qDebug() << "La ruta está vacía. No hay nada que dibujar.";
+        return;
+    }
+
+    auto color = QColor(128, 0, 128); // Color púrpura
+    auto brush = QBrush(color);
+
+    for (const auto &point : path)
+    {
+        // Dibujar un rectángulo para cada punto en la ruta
+        auto item = viewer->scene.addRect(-50, -50, 100, 100, QPen(color), brush);
+        item->setPos(point.x, point.y); // Usar directamente las coordenadas de TPoint
+        path_items.push_back(item);
+    }
+}
 //////////////////////////////////////////////////////////////////
 /// STATE MACHINE
 //////////////////////////////////////////////////////////////////
@@ -191,6 +222,7 @@ SpecificWorker::RobotSpeed SpecificWorker::state_machine(const TPath &path)
 
 SpecificWorker::RetVal SpecificWorker::track(const TPath &path)
 {
+    cout << "Tracking..." << endl;
     static float ant_angle_error = 0.0;
     //qDebug() << __FUNCTION__;
     // variance of the gaussian function is set by the user giving a point xset where the function must be yset, and solving for s
@@ -208,7 +240,7 @@ SpecificWorker::RetVal SpecificWorker::track(const TPath &path)
     { /* qWarning() << __FUNCTION__ << "No person found"; */ return RetVal(STATE::SEARCH, 0.f, 0.f);
     }
 
-    auto distance = path.back().norm();
+    auto distance = path.back().norm()+100.f;
     lcdNumber_dist_to_person->display(distance);
 
     // check if the distance to the person is lower than a threshold
@@ -232,8 +264,9 @@ SpecificWorker::RetVal SpecificWorker::track(const TPath &path)
 
 SpecificWorker::RetVal SpecificWorker::wait(const TPath &path)
 {
+    cout << "Waiting..." << endl;
     if(path.empty())
-        return RetVal(STATE::TRACK, 0.f, 0.f);
+        return RetVal(STATE::SEARCH, 0.f, 0.f);
 
     if(std::hypot(path[0].x(), path[0].y()) > params.PERSON_MIN_DIST + 100)
         return RetVal(STATE::TRACK, 0.f, 0.f);
@@ -243,6 +276,7 @@ SpecificWorker::RetVal SpecificWorker::wait(const TPath &path)
 
 SpecificWorker::RetVal SpecificWorker::search(const TPath &path)
 {
+    cout << "Searching..." << endl;
     if(not path.empty())
         return RetVal(STATE::TRACK, 0.f, 0.f);
 
@@ -251,6 +285,7 @@ SpecificWorker::RetVal SpecificWorker::search(const TPath &path)
 
 SpecificWorker::RetVal SpecificWorker::stop()
 {
+    cout << "Stopping..." << endl;
     if(not pushButton_stop->isChecked())
         return RetVal(STATE::TRACK, 0.f, 0.f);
 

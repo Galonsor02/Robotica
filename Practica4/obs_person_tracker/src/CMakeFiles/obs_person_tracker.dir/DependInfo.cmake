@@ -8,6 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
+  "" "src/obs_person_tracker_autogen/timestamp" "custom" "src/obs_person_tracker_autogen/deps"
   "/home/usuario/robocomp/components/Grupo3/Practica4/obs_person_tracker/src/Camera360RGB.cpp" "src/CMakeFiles/obs_person_tracker.dir/Camera360RGB.cpp.o" "gcc" "src/CMakeFiles/obs_person_tracker.dir/Camera360RGB.cpp.o.d"
   "/home/usuario/robocomp/components/Grupo3/Practica4/obs_person_tracker/src/CommonBehavior.cpp" "src/CMakeFiles/obs_person_tracker.dir/CommonBehavior.cpp.o" "gcc" "src/CMakeFiles/obs_person_tracker.dir/CommonBehavior.cpp.o.d"
   "/home/usuario/robocomp/components/Grupo3/Practica4/obs_person_tracker/src/GenericBase.cpp" "src/CMakeFiles/obs_person_tracker.dir/GenericBase.cpp.o" "gcc" "src/CMakeFiles/obs_person_tracker.dir/GenericBase.cpp.o.d"
@@ -46,8 +47,12 @@ set(CMAKE_MULTIPLE_OUTPUT_PAIRS
   )
 
 
-# Targets to which this target links.
-set(CMAKE_TARGET_LINKED_INFO_FILES
+# Targets to which this target links which contain Fortran sources.
+set(CMAKE_Fortran_TARGET_LINKED_INFO_FILES
+  )
+
+# Targets to which this target links which contain Fortran sources.
+set(CMAKE_Fortran_TARGET_FORWARD_LINKED_INFO_FILES
   )
 
 # Fortran module output directory.

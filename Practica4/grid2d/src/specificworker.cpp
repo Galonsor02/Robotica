@@ -102,15 +102,16 @@ void SpecificWorker::initialize()
 
 void SpecificWorker::compute()
 {
-    reset_grid();
+
 
     //read bpearl (lower) lidar and draw
     auto ldata_bpearl = read_lidar_bpearl();
     if(ldata_bpearl.empty()) { qWarning() << __FUNCTION__ << "Empty bpearl lidar data"; return; };
     draw_lidar(ldata_bpearl, &viewer->scene);
-
+	reset_grid();
 	// update grid
 	update_grid(ldata_bpearl);
+    draw_path(path, &viewer->scene);
 
 }
 
@@ -181,11 +182,11 @@ void SpecificWorker::update_grid(std::vector<Eigen::Vector2f> lidar_points)
         std::cout << point.x() << " " << point.y() << " " << last_cell_index.x() << " " << last_cell_index.y() << std::endl;
 
         // Verificación de límites antes de acceder a las celdas cercanas
-        for (int i = last_cell_index.x() - 2; i <= last_cell_index.x() + 2; ++i)
+        for (int i = last_cell_index.x() - 3; i <= last_cell_index.x() + 3; ++i)
         {
             if (i < 0 || i >= gridSize) continue; // Asegurarse de no estar fuera del rango
 
-            for (int j = last_cell_index.y() - 2; j <= last_cell_index.y() + 2; ++j)
+            for (int j = last_cell_index.y() - 3; j <= last_cell_index.y() + 3; ++j)
             {
                 if (j < 0 || j >= gridSize) continue; // Asegurarse de no estar fuera del rango
 
@@ -409,7 +410,7 @@ void SpecificWorker::viewerSlot(QPointF p)
 	int startY = gridSize / 2;
 	std::cout << "before dijkstra" << std::endl;
 
-	auto path = dijkstra(QPointF(0, 0), p);
+	auto path = dijkstra(QPointF(startX, startY), p);
 	std::cout << "after dijkstra" << std::endl;
 
 	draw_path(path, &viewer->scene);

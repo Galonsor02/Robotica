@@ -1,8 +1,12 @@
 /home/usuario/robocomp/components/Grupo3/Practica4/grid2d/src/grid2d_autogen/EWIEGA46WW/moc_specificmonitor.cpp: /home/usuario/robocomp/components/Grupo3/Practica4/grid2d/src/specificmonitor.h \
   /home/usuario/robocomp/components/Grupo3/Practica4/grid2d/src/grid2d_autogen/moc_predefs.h \
+  /home/usuario/robocomp_ws/src/robocomp/components/Grupo3/Practica4/grid2d/src/CommonBehavior.h \
+  /home/usuario/robocomp_ws/src/robocomp/components/Grupo3/Practica4/grid2d/src/Grid2D.h \
+  /home/usuario/robocomp_ws/src/robocomp/components/Grupo3/Practica4/grid2d/src/Lidar3D.h \
   /home/usuario/robocomp_ws/src/robocomp/components/Grupo3/Practica4/grid2d/src/config.h \
   /home/usuario/robocomp_ws/src/robocomp/components/Grupo3/Practica4/grid2d/src/genericmonitor.h \
   /home/usuario/robocomp_ws/src/robocomp/components/Grupo3/Practica4/grid2d/src/genericworker.h \
+  /home/usuario/robocomp_ws/src/robocomp/components/Grupo3/Practica4/grid2d/src/ui_mainUI.h \
   /home/usuario/robocomp_ws/src/robocomp/robocomp_core/classes/grafcetStep/GRAFCETStep.h \
   /home/usuario/robocomp_ws/src/robocomp/robocomp_core/classes/qlog/qlog.h \
   /usr/include/GL/gl.h \
@@ -457,6 +461,7 @@
   /usr/include/x86_64-linux-gnu/qt6/QtCore/QString \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/QStringList \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/QTimer \
+  /usr/include/x86_64-linux-gnu/qt6/QtCore/QVariant \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/QtCore \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/QtCoreDepends \
   /usr/include/x86_64-linux-gnu/qt6/QtCore/qabstractanimation.h \
@@ -786,6 +791,20 @@
   /usr/include/x86_64-linux-gnu/qt6/QtStateMachine/qstatemachine.h \
   /usr/include/x86_64-linux-gnu/qt6/QtStateMachine/qstatemachineglobal.h \
   /usr/include/x86_64-linux-gnu/qt6/QtStateMachine/qtstatemachine-config.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QApplication \
+  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QFrame \
+  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QVBoxLayout \
+  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/QWidget \
+  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qapplication.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qboxlayout.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qframe.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qgridlayout.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qlayout.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qlayoutitem.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qsizepolicy.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtwidgets-config.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtwidgetsglobal.h \
+  /usr/include/x86_64-linux-gnu/qt6/QtWidgets/qwidget.h \
   /usr/include/x86_64-linux-gnu/sys/cdefs.h \
   /usr/include/x86_64-linux-gnu/sys/select.h \
   /usr/include/x86_64-linux-gnu/sys/syscall.h \

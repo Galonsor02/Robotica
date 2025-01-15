@@ -51,6 +51,7 @@ class SpecificWorker : public GenericWorker
         void emergency();
         void restore();
         int startup_check();
+        void draw_path(const std::vector<RoboCompGrid2D::TPoint> &path);
 
     private:
         bool startup_check_flag;
@@ -58,8 +59,8 @@ class SpecificWorker : public GenericWorker
         {
             float ROBOT_WIDTH = 460;  // mm
             float ROBOT_LENGTH = 480;  // mm
-            float MAX_ADV_SPEED = 1200; // mm/s
-            float MAX_ROT_SPEED = 2; // rad/s
+            float MAX_ADV_SPEED = 500; // mm/s
+            float MAX_ROT_SPEED = 1; // rad/s
             float SEARCH_ROT_SPEED = 2; // rad/s
             float PERSON_MIN_DIST = 1000; // mm
             int MAX_DIST_POINTS_TO_SHOW = 300; // points to show in plot
@@ -85,7 +86,7 @@ class SpecificWorker : public GenericWorker
         RetVal search(const TPath &path);
         RetVal stop();
         RobotSpeed state_machine( const TPath &path);
-
+        std::vector<QGraphicsItem*> path_items; // Ítems gráficos para la ruta
         // draw
         AbstractGraphicViewer *viewer;
         QGraphicsPolygonItem *robot_draw;
