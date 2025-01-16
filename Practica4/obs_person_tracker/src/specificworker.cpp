@@ -110,6 +110,7 @@ void SpecificWorker::compute()
         try
         {
             auto res = grid2d_proxy->getPaths(RoboCompGrid2D::TPoint{0.f, 0.f, 250}, RoboCompGrid2D::TPoint{x, y, 250});
+
             path.clear(); // Ensure the vector is empty before filling it
             for (const auto &p : res.path)
                 path.emplace_back(p.x, p.y); // Convert RoboCompGrid2D::TPoint to Eigen::Vector2f
@@ -240,17 +241,16 @@ SpecificWorker::RetVal SpecificWorker::track(const TPath &path)
     { /* qWarning() << __FUNCTION__ << "No person found"; */ return RetVal(STATE::SEARCH, 0.f, 0.f);
     }
 
-    auto distance = path.back().norm()+100.f;
+    auto distance = path.back().norm();
     lcdNumber_dist_to_person->display(distance);
 
     // check if the distance to the person is lower than a threshold
     if(distance < params.PERSON_MIN_DIST) {
-
         qWarning() << __FUNCTION__ << "Distance to person lower than threshold"; return RetVal(STATE::WAIT, 0.f, 0.f);
     }
 
-    // angle error is the angle between the robot and the person. It has to be brought to zero
-    float angle_error = atan2(path[1].x(), path[1].y());
+    // angle error is the angle between the robot and the first point of the path.
+    float angle_error = atan2(path[3].x(), path[3].y());
     float rot_speed = params.k1 * angle_error + params.k2 * (angle_error-ant_angle_error);
     ant_angle_error = angle_error;
     // rot_brake is a value between 0 and 1 that decreases the speed when the robot is not facing the person

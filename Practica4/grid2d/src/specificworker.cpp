@@ -145,6 +145,7 @@ void SpecificWorker::update_grid(std::vector<Eigen::Vector2f> lidar_points)
         float distance = std::sqrt(point.x() * point.x() + point.y() * point.y());
 
         // Calcula el número de pasos (S) y el delta
+        // Calcula el número de pasos (S) y el delta
         float Steps = (distance / cellSize);  // S es el número de pasos de 100mm(TAMAÑO DE CELDA)
 
         // Asegúrate de que Steps no sea cero (evitar división por cero)
@@ -182,11 +183,11 @@ void SpecificWorker::update_grid(std::vector<Eigen::Vector2f> lidar_points)
         std::cout << point.x() << " " << point.y() << " " << last_cell_index.x() << " " << last_cell_index.y() << std::endl;
 
         // Verificación de límites antes de acceder a las celdas cercanas
-        for (int i = last_cell_index.x() - 3; i <= last_cell_index.x() + 3; ++i)
+        for (int i = last_cell_index.x() - 4; i <= last_cell_index.x() + 4; ++i)
         {
             if (i < 0 || i >= gridSize) continue; // Asegurarse de no estar fuera del rango
 
-            for (int j = last_cell_index.y() - 3; j <= last_cell_index.y() + 3; ++j)
+            for (int j = last_cell_index.y() - 4; j <= last_cell_index.y() + 4; ++j)
             {
                 if (j < 0 || j >= gridSize) continue; // Asegurarse de no estar fuera del rango
 
@@ -230,56 +231,54 @@ QPoint SpecificWorker::real_to_index(float x, float y)
 bool SpecificWorker::grid_index_valid(const QPoint& index) {
 	return index.x() >= 0 && index.x() < gridSize && index.y() >= 0 && index.y() < gridSize;
 }
-// La función de Dijkstra
 
+// La función de Dijkstra
 std::vector<QPointF> SpecificWorker::dijkstra(QPointF start_, QPointF goal_)
 {
-	const auto start = real_to_index(start_.x(), start_.y());
-	const auto goal = real_to_index(goal_.x(), goal_.y());
-    // Mapa para almacenar el costo mínimo de cada celda
+    const auto start = real_to_index(start_.x(), start_.y());
+    const auto goal = real_to_index(goal_.x(), goal_.y());
+
+    // Mapas para almacenar las distancias y las celdas anteriores
     std::unordered_map<QPoint, float, QPointHash> distance_map;
-    // Mapa para almacenar la celda anterior en el camino
     std::unordered_map<QPoint, QPoint, QPointHash> previous_map;
 
-    // Cola de prioridad para procesar las celdas con menor costo primero
+    // Cola de prioridad, ordenada por costo (menor costo primero)
     std::priority_queue<Cell, std::vector<Cell>, std::greater<Cell>> pq;
-    pq.push({0.0f, start});  // Comenzamos con el punto de inicio con un costo de 0
+    pq.push({0.0f, start});
     distance_map[start] = 0.0f;
 
-    // Direcciones de los vecinos: arriba, abajo, izquierda, derecha
+    // Direcciones para moverse (arriba, abajo, derecha, izquierda)
     std::vector<QPoint> directions = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
 
+    // Procesamiento principal de Dijkstra
     while (!pq.empty()) {
         Cell current = pq.top();
         pq.pop();
 
         // Si llegamos al objetivo, reconstruimos el camino
         if (current.position == goal) {
-        	std::vector<QPoint> path;
-        	while (previous_map.find(current.position) != previous_map.end()) {
-        		path.push_back(current.position);
-        		current.position = previous_map[current.position];
-        	}
-        	std::reverse(path.begin(), path.end());  // Invertir el camino para que vaya de inicio a objetivo
-        	std::vector<QPointF> path_real;
-        	std::ranges::transform(path, std::back_inserter(path_real), [this](const auto& p)
-        			{ return index_to_real(p.x(), p.y()); });
-        	return path_real;
+            std::vector<QPointF> path_real;
+            for (QPoint p = goal; p != start; p = previous_map[p]) {
+                path_real.push_back(index_to_real(p.x(), p.y()));
+            }
+            path_real.push_back(index_to_real(start.x(), start.y()));
+            std::reverse(path_real.begin(), path_real.end());
+            return path_real;
         }
 
         // Explorar los vecinos
         for (const auto& dir : directions) {
             QPoint neighbor = current.position + dir;
 
-            // Comprobar si el vecino está dentro de los límites del grid
+            // Verificar si el vecino está dentro de los límites del grid
             if (grid_index_valid(neighbor)) {
-                // Obtener el costo de la celda vecina (ya sea libre o un obstáculo)
-                float neighbor_cost = grid[neighbor.x()][neighbor.y()].State == STATE::OCCUPIED ? INF : 1.0f;
+                // Obtener el costo del vecino (por ejemplo, libre o ocupado)
+                float neighbor_cost = (grid[neighbor.x()][neighbor.y()].State == STATE::OCCUPIED) ? INF : 1.0f;
 
                 // Calcular el costo total de llegar al vecino
                 float new_cost = current.cost + neighbor_cost;
 
-                // Si encontramos un camino más corto al vecino, actualizamos la distancia
+                // Si encontramos un camino más corto al vecino, actualizar la distancia
                 if (distance_map.find(neighbor) == distance_map.end() || new_cost < distance_map[neighbor]) {
                     distance_map[neighbor] = new_cost;
                     previous_map[neighbor] = current.position;
@@ -289,7 +288,7 @@ std::vector<QPointF> SpecificWorker::dijkstra(QPointF start_, QPointF goal_)
         }
     }
 
-    return {};  // Si no encontramos un camino, devolvemos un vector vacío
+    return {};  // Si no encontramos un camino, devolver un vector vacío
 }
 
 // // Función para encontrar y mostrar el camino en el grid

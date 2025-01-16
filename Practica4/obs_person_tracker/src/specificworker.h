@@ -59,9 +59,9 @@ class SpecificWorker : public GenericWorker
         {
             float ROBOT_WIDTH = 460;  // mm
             float ROBOT_LENGTH = 480;  // mm
-            float MAX_ADV_SPEED = 500; // mm/s
-            float MAX_ROT_SPEED = 1; // rad/s
-            float SEARCH_ROT_SPEED = 2; // rad/s
+            float MAX_ADV_SPEED = 700; // mm/s
+            float MAX_ROT_SPEED = 2; // rad/s
+            float SEARCH_ROT_SPEED = 1; // rad/s
             float PERSON_MIN_DIST = 1000; // mm
             int MAX_DIST_POINTS_TO_SHOW = 300; // points to show in plot
             QRectF GRID_MAX_DIM{-5000, 2500, 10000, -5000};
@@ -87,6 +87,8 @@ class SpecificWorker : public GenericWorker
         RetVal stop();
         RobotSpeed state_machine( const TPath &path);
         std::vector<QGraphicsItem*> path_items; // Ítems gráficos para la ruta
+        bool flag=true;
+        RoboCompGrid2D::Result onePath;
         // draw
         AbstractGraphicViewer *viewer;
         QGraphicsPolygonItem *robot_draw;
