@@ -366,5 +366,5 @@ src/CMakeFiles/grid2d.dir/home/robocomp/robocomp/classes/sigwatch/sigwatch.cpp.o
  /usr/include/x86_64-linux-gnu/bits/types/struct_sigstack.h \
  /usr/include/x86_64-linux-gnu/bits/sigthread.h \
  /usr/include/x86_64-linux-gnu/bits/signal_ext.h \
- /home/usuario/robocomp/components/Grupo3/Practica4/grid2d/src/grid2d_autogen/include/moc_sigwatch.cpp \
- /home/usuario/robocomp/components/Grupo3/Practica4/grid2d/src/../../../../../../../../../robocomp/robocomp/classes/sigwatch/sigwatch.h
+ /home/usuario/robocomp_ws/src/robocomp/components/Grupo3/Practica4/grid2d/src/grid2d_autogen/include/moc_sigwatch.cpp \
+ /home/usuario/robocomp_ws/src/robocomp/components/Grupo3/Practica4/grid2d/src/grid2d_autogen/include/../../../../../../../../../../../robocomp/robocomp/classes/sigwatch/sigwatch.h

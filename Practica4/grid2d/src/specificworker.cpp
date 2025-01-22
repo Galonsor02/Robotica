@@ -183,11 +183,11 @@ void SpecificWorker::update_grid(std::vector<Eigen::Vector2f> lidar_points)
         std::cout << point.x() << " " << point.y() << " " << last_cell_index.x() << " " << last_cell_index.y() << std::endl;
 
         // Verificación de límites antes de acceder a las celdas cercanas
-        for (int i = last_cell_index.x() - 4; i <= last_cell_index.x() + 4; ++i)
+        for (int i = last_cell_index.x() - 3; i <= last_cell_index.x() + 3; ++i)
         {
             if (i < 0 || i >= gridSize) continue; // Asegurarse de no estar fuera del rango
 
-            for (int j = last_cell_index.y() - 4; j <= last_cell_index.y() + 4; ++j)
+            for (int j = last_cell_index.y() - 3; j <= last_cell_index.y() + 3; ++j)
             {
                 if (j < 0 || j >= gridSize) continue; // Asegurarse de no estar fuera del rango
 
@@ -199,6 +199,24 @@ void SpecificWorker::update_grid(std::vector<Eigen::Vector2f> lidar_points)
         }
     }
 
+}
+
+void SpecificWorker::update_person(int x, int y)
+{
+	//celdas vecinas
+	for (int i = -3; i <= 3; i++)
+	{
+		for (int j = -3; j <= 3; j++)
+		{
+			int xvecino = x + i;
+			int yvecino = y + j;
+			//dentro de los limites
+			if (xvecino >= 0 && xvecino < gridSize && yvecino >= 0 && yvecino < gridSize)
+			{
+				grid[xvecino][yvecino].State = STATE::FREE;
+			}
+		}
+	}
 }
 
 void SpecificWorker::reset_grid()
@@ -431,6 +449,7 @@ RoboCompGrid2D::Result SpecificWorker::Grid2D_getPaths(RoboCompGrid2D::TPoint so
 	int startX = gridSize / 2;
 	int startY = gridSize / 2;
 
+    update_person(goalX, goalY);
 	auto path = dijkstra(QPointF(source.x, source.y), QPointF(target.x, target.y));
 	RoboCompGrid2D::Result result;
 	std::ranges::transform(path, std::back_inserter(result.path), [](const auto& p)

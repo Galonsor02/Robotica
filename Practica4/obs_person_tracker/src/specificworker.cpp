@@ -268,7 +268,7 @@ SpecificWorker::RetVal SpecificWorker::wait(const TPath &path)
     if(path.empty())
         return RetVal(STATE::SEARCH, 0.f, 0.f);
 
-    if(std::hypot(path[0].x(), path[0].y()) > params.PERSON_MIN_DIST + 100)
+    if(std::hypot(path[3].x(), path[3].y()) > params.PERSON_MIN_DIST + 100)
         return RetVal(STATE::TRACK, 0.f, 0.f);
 
     return RetVal(STATE::WAIT, 0.f, 0.f);

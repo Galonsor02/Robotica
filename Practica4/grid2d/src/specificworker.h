@@ -121,6 +121,8 @@ private:
 	QPoint real_to_index(float i, float j);
 	//update grid
 	void update_grid(std::vector<Eigen::Vector2f> bpearl);
+    //update person
+	void update_person(int x, int y);
 	//reset grid
 	void reset_grid();
 	//camino
